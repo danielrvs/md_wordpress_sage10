@@ -1,0 +1,58 @@
+FROM dunglas/frankenphp:1.4.4-php8.4 AS php
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    curl \
+    git \
+    unzip \
+    ca-certificates \
+    default-mysql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN install-php-extensions \
+    intl \
+    gd \
+    mysqli \
+    pdo_mysql \
+    opcache \
+    zip \
+    redis \
+    xdebug
+
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs
+
+RUN npm install -g pnpm
+
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
+
+
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app/wp
+
+ENV SERVER_NAME=:80
+
+# Copy php ini settings for wordpress enterprise development
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+
+# Opcache settings for wordpress enterprise development
+RUN printf "%s\n" \
+    "opcache.memory_consumption=256" \
+    "opcache.interned_strings_buffer=16" \
+    "max_accelerated_files=20000" \
+    "opcache.revalidate_freq=0" \
+    "opcache.validate_timestamps=1" \
+    > "$PHP_INI_DIR/conf.d/10-opcache.ini"
+
+# Xdebug settings
+RUN printf "%s\n" \
+    "xdebug.mode=debug" \
+    "xdebug.start_with_request=yes" \
+    "xdebug.client_host=host.docker.internal" \
+    "xdebug.client_port=9003" \
+    "xdebug.log=/var/log/xdebug.log" \
+    > "$PHP_INI_DIR/conf.d/20-xdebug.ini"

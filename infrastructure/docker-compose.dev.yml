@@ -1,0 +1,73 @@
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: infrastructure/php/Dockerfile.dev
+    container_name: md_press_php
+    image: enterprise-wp-frankenphp:1.0
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - app-network
+    environment:
+      SERVER_NAME: "localhost"
+      CADDY_SERVER_EXTRA_DIRECTIVES: |
+        root * /app/wp/web
+        @wp-admin {
+            path /wp-admin*
+            not path /wp-admin/admin-ajax.php
+        }
+        rewrite @wp-admin /wp/index.php?{query}
+        try_files {path} {path}/ /index.php?{query}
+    volumes:
+      - ../:/app
+      - caddy_data:/data
+      - caddy_config:/config
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: mysql:8.4.10
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${DB_USER}", "-p${DB_PASSWORD}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  redis:
+    image: redis:8.4.4-alpine3.22
+    container_name: md_press_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  redis_data:
+  caddy_data:
+  caddy_config:
