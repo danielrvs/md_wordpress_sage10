@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @php
-      $meta_description = get_bloginfo('description');
+    <?php
+      $site_meta_description = get_bloginfo('description');
       if (is_singular()) {
-        $meta_description = wp_strip_all_tags(get_the_excerpt());
+        $site_meta_description = wp_strip_all_tags(get_the_excerpt());
       }
-    @endphp
-    @if ($meta_description)
-      <meta name="description" content="{{ esc_attr($meta_description) }}">
-    @endif
+    ?>
+    <?php if (!empty($site_meta_description)) : ?>
+      <meta name="description" content="<?php echo esc_attr($site_meta_description); ?>">
+    <?php endif; ?>
     @php(do_action('get_header'))
     @php(wp_head())
 

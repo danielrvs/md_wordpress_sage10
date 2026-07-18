@@ -7,6 +7,10 @@ namespace App\Domain\Doctors;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
+/**
+ * Registrar Custom Post Type Doctor
+ */
+
 add_action('init', function () {
     $labels = [
         'name' => 'Médicos',
@@ -32,6 +36,10 @@ add_action('init', function () {
 
     register_post_type('doctor', $args);
 });
+
+/**
+ * Invalidación de caché a partir de hooks
+ */
 
 add_action('save_post_doctor', 'App\Domain\Doctors\invalidate_doctor_cache', 10, 1);
 add_action('before_delete_post', 'App\Domain\Doctors\invalidate_doctor_cache', 10, 1);
@@ -60,10 +68,92 @@ function invalidate_doctor_cache(int $postId): void
     }
 }
 
+/**
+ * Registrar los campos personalizados (Metadatos) para el CPT Doctor vía ACF
+ */
+add_action('acf/init', function () {
+    if (!function_exists('acf_add_local_field_group')) {
+        return;
+    }
+
+    acf_add_local_field_group([
+        'key' => 'group_doctor_metadata',
+        'title' => 'Información Profesional del Médico',
+        'fields' => [
+            [
+                'key' => 'field_medical_specialty',
+                'label' => 'Especialidad Médica',
+                'name' => 'medical_specialty', // Coincide exactamente con tu DTO y repositorio
+                'type' => 'text',
+                'required' => 1,
+                'placeholder' => 'Ej: Cardiología, Pediatría...',
+            ],
+            [
+                'key' => 'field_medical_location',
+                'label' => 'Ubicación / Consultorio',
+                'name' => 'medical_location', // Coincide con tu DTO y repositorio
+                'type' => 'text',
+                'required' => 1,
+                'placeholder' => 'Ej: Planta 2, Consultorio 204 o Madrid, Centro',
+            ],
+            [
+                'key' => 'field_medical_availability',
+                'label' => 'Disponibilidad',
+                'name' => 'medical_availability', // Coincide con tu DTO y repositorio
+                'type' => 'select',
+                'choices' => [
+                    'Inmediata' => 'Inmediata',
+                    'Esta semana' => 'Esta semana',
+                    'Bajo consulta' => 'Bajo consulta',
+                ],
+                'default_value' => 'Bajo consulta',
+                'required' => 1,
+            ],
+            [
+                'key' => 'field_medical_rating',
+                'label' => 'Puntuación Inicial (Rating)',
+                'name' => 'medical_rating', // Coincide con tu DTO y repositorio
+                'type' => 'number',
+                'default_value' => '5.0',
+                'min' => '1',
+                'max' => '5',
+                'step' => '0.1',
+                'required' => 1,
+            ],
+            [
+                'key' => 'field_assigned_user_id',
+                'label' => 'Usuario de WordPress Vinculado',
+                'name' => '_assigned_user_id', // Coincide con la lógica de login que planteamos
+                'type' => 'user',
+                'instructions' => 'Asigna el usuario de acceso para que este médico pueda gestionar su perfil.',
+                'role' => ['medical_professional', 'administrator'],
+                'allow_null' => 1,
+                'multiple' => 0,
+                'return_format' => 'id',
+            ],
+        ],
+        'location' => [
+            [
+                [
+                    'param' => 'post_type',
+                    'operator' => '==',
+                    'value' => 'doctor', // Se asocia exclusivamente a nuestro CPT
+                ],
+            ],
+        ],
+        'menu_order' => 0,
+        'position' => 'normal', // Los renderiza justo debajo del editor Gutenberg
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+    ]);
+});
+
 // router 
 add_action('rest_api_init', function () {
     register_rest_route('api/v1', '/doctors', [
         'methods' => 'GET',
-        'callback' => [app()]
+        'callback' => [app(\App\Domain\Doctors\Http\Controllers\DoctorController::class), 'index'],
+        'permission_callback' => '__return_true',
     ]);
 });
