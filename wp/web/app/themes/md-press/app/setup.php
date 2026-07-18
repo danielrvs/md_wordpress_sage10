@@ -29,15 +29,15 @@ add_filter('block_editor_settings_all', function ($settings) {
  * @return void
  */
 add_action('admin_head', function () {
-    if (! get_current_screen()?->is_block_editor()) {
+    if (!get_current_screen()?->is_block_editor()) {
         return;
     }
 
-    if (! Vite::isRunningHot()) {
+    if (!Vite::isRunningHot()) {
         $dependencies = json_decode(Vite::content('editor.deps.json'));
 
         foreach ($dependencies as $dependency) {
-            if (! wp_script_is($dependency)) {
+            if (!wp_script_is($dependency)) {
                 wp_enqueue_script($dependency);
             }
         }
@@ -160,4 +160,14 @@ add_action('widgets_init', function () {
         'name' => __('Footer', 'sage'),
         'id' => 'sidebar-footer',
     ] + $config);
+});
+
+add_action('init', function () {
+    if (!get_role('medical_professional')) {
+        add_role('medical_professional', 'Doctor', [
+            'read' => true,
+            'edit_posts' => false,
+            'upload_files' => true,
+        ]);
+    }
 });
