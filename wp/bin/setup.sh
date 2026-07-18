@@ -97,6 +97,10 @@ else
     exit 1
 fi
 
+log_info "🔌 Activando Plugins Críticos (ACF & Redis Cache)..."
+wp plugin activate advanced-custom-fields redis-cache --allow-root
+log_success "✅ Plugins activados correctamente"
+
 if [ -f "${THEME_DIR}/package.json" ]; then
     cd "${THEME_DIR}"
     if [ ! -d "node_modules" ]; then
