@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Doctors;
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+
 add_action('init', function () {
     $labels = [
         'name' => 'Médicos',
@@ -30,10 +33,37 @@ add_action('init', function () {
     register_post_type('doctor', $args);
 });
 
+add_action('save_post_doctor', 'App\Domain\Doctors\invalidate_doctor_cache', 10, 1);
+add_action('before_delete_post', 'App\Domain\Doctors\invalidate_doctor_cache', 10, 1);
+
+
+function invalidate_doctor_cache(int $postId): void
+{
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    Cache::forget("doctors:id:{$postId}");
+
+    try {
+        $redis = Redis::connection();
+        $prefix = config('cache.prefix', 'laravel_cache') . ':';
+        $keys = $redis->keys($prefix . 'doctors:*');
+
+        if (!empty($keys)) {
+            foreach ($keys as $key) {
+                $cleanKey = str_replace($prefix, '', $key);
+                Cache::forget($cleanKey);
+            }
+        }
+    } catch (\Throwable $e) {
+        error_log('Error al invalidar la caché de médicos en Redis: ' . $e->getMessage());
+    }
+}
+
 // router 
 add_action('rest_api_init', function () {
     register_rest_route('api/v1', '/doctors', [
-       'methods' => 'GET',
-       'callback' => [app()] 
+        'methods' => 'GET',
+        'callback' => [app()]
     ]);
 });
