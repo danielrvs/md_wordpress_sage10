@@ -17,19 +17,30 @@
     }
   ],
   "keywords": [
-    "bedrock", "composer", "roots", "wordpress-composer", "wordpress", "wp-composer", "wp-config", "wp"
+    "bedrock",
+    "composer",
+    "roots",
+    "wordpress-composer",
+    "wordpress",
+    "wp-composer",
+    "wp-config",
+    "wp"
   ],
   "support": {
     "issues": "https://github.com/roots/bedrock/issues",
     "forum": "https://discourse.roots.io/category/bedrock"
   },
-  "repositories": [
-    {
+  "repositories": {
+    "wpackagist": {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    "0": {
       "name": "wp-packages",
       "type": "composer",
       "url": "https://repo.wp-packages.org"
     }
-  ],
+  },
   "require": {
     "php": ">=8.3",
     "composer/installers": "^2.0",
