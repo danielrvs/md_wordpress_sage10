@@ -27,7 +27,7 @@ add_action('init', function () {
     $args = [
         'labels' => $labels,
         'public' => true,
-        'has_archive' => false,
+        'has_archive' => true,
         'show_ui' => true,
         'show_in_menu' => true,
         'show_in_rest' => true,
