@@ -14,6 +14,16 @@
       $rating = isset($doctor) && isset($doctor['rating']) ? floatval($doctor['rating']) : floatval(get_post_meta(get_the_ID(), 'medical_rating', true) ?: 5.0);
       $name = isset($doctor) && isset($doctor['name']) ? $doctor['name'] : get_the_title();
       $avatarUrl = get_the_post_thumbnail_url(get_the_ID(), 'medium') ?: (get_post_meta(get_the_ID(), '_mock_avatar_url', true) ?: null);
+      
+      $doctorId = get_the_ID();
+      $currentDate = date('Y-m-d');
+      $scheduleService = app(\App\Domain\Schedules\Contracts\GenerateDoctorScheduleServiceInterface::class);
+      $initialSchedule = null;
+      try {
+          $initialSchedule = $scheduleService->execute($doctorId, $currentDate);
+      } catch (\Exception $e) {
+          // Ignorar error
+      }
     ?>
 
     <div class="relative min-h-screen bg-slate-950 text-white overflow-hidden font-sans">
@@ -127,7 +137,7 @@
               </div>
             </div>
 
-            <!-- Schedules / Consultation slots mock card -->
+            <!-- Schedules / Consultation slots React Card -->
             <div class="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-xl">
               <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2 border-b border-white/10 pb-2">
                 <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -135,26 +145,20 @@
                 </svg>
                 Horarios Disponibles
               </h2>
-              <p class="text-slate-400 text-sm mb-6">Selecciona una de las franjas horarias libres para reservar tu cita médica:</p>
               
-              <!-- Days & Slots Grid -->
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <button class="p-3.5 rounded-xl border border-white/10 bg-slate-900/40 hover:border-emerald-500/40 hover:bg-emerald-500/5 active:scale-95 transition-all text-center">
-                  <div class="text-[10px] text-slate-500 font-bold uppercase">Hoy</div>
-                  <div class="text-sm font-semibold text-white mt-1">09:30</div>
-                </button>
-                <button class="p-3.5 rounded-xl border border-white/10 bg-slate-900/40 hover:border-emerald-500/40 hover:bg-emerald-500/5 active:scale-95 transition-all text-center">
-                  <div class="text-[10px] text-slate-500 font-bold uppercase">Hoy</div>
-                  <div class="text-sm font-semibold text-white mt-1">11:00</div>
-                </button>
-                <button class="p-3.5 rounded-xl border border-white/10 bg-slate-900/40 hover:border-emerald-500/40 hover:bg-emerald-500/5 active:scale-95 transition-all text-center">
-                  <div class="text-[10px] text-slate-500 font-bold uppercase">Mañana</div>
-                  <div class="text-sm font-semibold text-white mt-1">16:15</div>
-                </button>
-                <button class="p-3.5 rounded-xl border border-white/10 bg-slate-900/40 hover:border-emerald-500/40 hover:bg-emerald-500/5 active:scale-95 transition-all text-center">
-                  <div class="text-[10px] text-slate-500 font-bold uppercase">Mañana</div>
-                  <div class="text-sm font-semibold text-white mt-1">18:00</div>
-                </button>
+              <!-- React App Mount Point for Booking -->
+              <div id="doctor-booking-root"
+                   data-doctor-id="{{ $doctorId }}"
+                   data-initial-date="{{ $currentDate }}"
+                   data-initial-schedule='{!! json_encode($initialSchedule ? $initialSchedule->toArray() : null) !!}'>
+                
+                <div class="flex flex-col items-center justify-center py-10 text-slate-400">
+                  <svg class="animate-spin h-8 w-8 text-emerald-500 mb-3" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <p class="text-xs font-semibold">Cargando selector de horarios...</p>
+                </div>
               </div>
             </div>
 

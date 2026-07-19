@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Domain\Doctors\Repositories\CachedDoctorRepository;
-use App\Domain\Doctors\Repositories\DoctorRepositoryInterface;
+use App\Domain\Doctors\Contracts\DoctorRepositoryInterface;
 use App\Domain\Doctors\Repositories\WpQueryDoctorRepository;
 use App\Domain\Schedules\Contracts\GenerateDoctorScheduleServiceInterface;
 use App\Domain\Schedules\Contracts\ScheduleRepositoryInterface;

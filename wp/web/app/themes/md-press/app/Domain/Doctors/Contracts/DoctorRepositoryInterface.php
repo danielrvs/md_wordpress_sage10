@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Doctors\Repositories;
+namespace App\Domain\Doctors\Contracts;
 
 use App\Domain\Doctors\DTOs\DoctorDTO;
 
