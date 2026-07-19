@@ -87,7 +87,7 @@ class ScheduleSeeder
         }
 
         WP_CLI::success(sprintf(
-            '¡Completado! Se han insertado %d jornadas semanales y %d bloqueos de ausencia.',
+            '¡Sembrado completado! Se han insertado %d jornadas semanales y %d bloqueos de ausencia.',
             $insertedSchedules,
             $insertedAbsences
         ));
@@ -98,11 +98,16 @@ class ScheduleSeeder
         global $wpdb;
 
         $workdays = (array) $this->faker->randomElements([1, 2, 3, 4, 5], $this->faker->numberBetween(3, 5));
-        $chosenShift = $this->faker->randomElement($shifts);
-        $chosenDuration = $this->faker->randomElement($durations);
         $count = 0;
 
+        for ($day = 1; $day <= 7; $day++) {
+            update_field("works_{$day}", 0, $doctorId);
+        }
+
         foreach ($workdays as $day) {
+            $chosenShift = $this->faker->randomElement($shifts);
+            $chosenDuration = $this->faker->randomElement($durations);
+
             $wpdb->insert($this->tableWeekly, [
                 'doctor_id' => $doctorId,
                 'day_of_week' => $day,
@@ -110,6 +115,13 @@ class ScheduleSeeder
                 'end_time' => $chosenShift['end'],
                 'slot_duration' => $chosenDuration,
             ]);
+
+            // 2. Persistencia en Postmeta mapeando las pestañas individuales de ACF Free
+            update_field("works_{$day}", 1, $doctorId);
+            update_field("start_{$day}", $chosenShift['start'], $doctorId);
+            update_field("end_{$day}", $chosenShift['end'], $doctorId);
+            update_field("duration_{$day}", $chosenDuration, $doctorId);
+
             $count++;
         }
 

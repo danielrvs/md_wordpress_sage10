@@ -17,6 +17,9 @@ final class UpdateDoctorScheduleService
     public function execute(int $doctorId, array $rules): void
     {
         $this->scheduleRepository->syncWeeklyRules($doctorId, $rules);
-        Cache::tags(["doctor_schedules:{$doctorId}"])->flush();
+        
+        $versionKey = "doctor_schedules:v:{$doctorId}";
+        $version = (int) Cache::get($versionKey, 1);
+        Cache::put($versionKey, $version + 1, 86400 * 30);
     }
 }
