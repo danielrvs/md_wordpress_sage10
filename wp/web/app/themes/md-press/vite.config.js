@@ -12,7 +12,9 @@ if (!process.env.APP_URL) {
 export default defineConfig({
   base: '/app/themes/md-press/public/build/',
   plugins: [
-    react(),
+    react({
+      jsxRuntime: 'classic',
+    }),
     tailwindcss(),
     laravel({
       input: [

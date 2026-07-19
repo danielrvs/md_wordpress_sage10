@@ -17,8 +17,8 @@
           class="hover:text-emerald-400 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-white/5 {{ is_front_page() ? 'text-emerald-400 bg-white/5' : '' }}">
           Inicio
         </a>
-        <a href="{{ home_url('/directorio') }}"
-          class="hover:text-emerald-400 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-white/5">
+        <a href="{{ home_url('/doctors') }}"
+          class="hover:text-emerald-400 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-white/5 {{ is_page('doctors') ? 'text-emerald-400 bg-white/5' : '' }}">
           Directorio
         </a>
         <a href="{{ home_url('/about') }}"

@@ -18,20 +18,19 @@ class CachedDoctorRepository implements DoctorRepositoryInterface
 
     public function all(int $page, int $perPage = 10): array
     {
-        $key = "doctors:all:p_{$page}:per_{$perPage}";
-
-        return Cache::remember($key, self::TTL, function () use ($page, $perPage) {
-            return $this->next->all($page, $perPage);
-        });
+        return $this->search([], $page, $perPage);
     }
 
     public function findById(int $id): ?DoctorDTO
     {
         $key = "doctors:id:{$id}";
 
-        return Cache::remember($key, self::TTL, function () use ($id) {
-            return $this->next->findById($id);
+        $data = Cache::remember($key, self::TTL, function () use ($id) {
+            $dto = $this->next->findById($id);
+            return $dto ? $dto->toArray() : null;
         });
+
+        return $data ? DoctorDTO::fromArray($data) : null;
     }
 
     public function search(array $filters, int $page, int $perPage = 10): array
@@ -39,9 +38,14 @@ class CachedDoctorRepository implements DoctorRepositoryInterface
         $filtersHash = md5(serialize($filters));
         $key = "doctors:search:{$filtersHash}:p_{$page}:per_{$perPage}";
 
-        return Cache::remember($key, self::TTL, function () use ($filters, $page, $perPage) {
-            return $this->next->search($filters, $page, $perPage);
+        // Almacenamos una colección de arrays
+        $cachedArray = Cache::remember($key, self::TTL, function () use ($filters, $page, $perPage) {
+            $doctors = $this->next->search($filters, $page, $perPage);
+            return array_map(fn(DoctorDTO $doctor) => $doctor->toArray(), $doctors);
         });
+
+        // Rehidratamos los DTOs para el resto de la aplicación
+        return array_map(fn(array $data) => DoctorDTO::fromArray($data), $cachedArray);
     }
 
     public function count(array $filters): int
@@ -49,7 +53,8 @@ class CachedDoctorRepository implements DoctorRepositoryInterface
         $filtersHash = md5(serialize($filters));
         $key = "doctors:count:{$filtersHash}";
 
-        return Cache::remember($key, self::TTL, function () use ($filters) {
+        // Los enteros se guardan de forma nativa sin problemas
+        return (int) Cache::remember($key, self::TTL, function () use ($filters) {
             return $this->next->count($filters);
         });
     }

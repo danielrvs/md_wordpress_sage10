@@ -144,6 +144,13 @@ Config::define('NONCE_SALT', env('NONCE_SALT'));
 Config::define('AUTOMATIC_UPDATER_DISABLED', true);
 Config::define('DISABLE_WP_CRON', env('DISABLE_WP_CRON') ?: false);
 
+/**
+ * Redis Object Cache Settings
+ */
+Config::define('WP_REDIS_HOST', env('REDIS_HOST') ?: 'redis');
+Config::define('WP_REDIS_PORT', env('REDIS_PORT') ?: 6379);
+Config::define('WP_REDIS_PASSWORD', env('REDIS_PASSWORD') ?: '');
+
 // Disable the plugin and theme file editor in the admin
 Config::define('DISALLOW_FILE_EDIT', true);
 

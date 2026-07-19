@@ -171,3 +171,10 @@ add_action('init', function () {
         ]);
     }
 });
+
+/**
+ * Enqueue frontend scripts dependencies.
+ */
+add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_script('wp-element');
+});

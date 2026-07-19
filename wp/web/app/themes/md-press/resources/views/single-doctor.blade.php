@@ -3,10 +3,11 @@
 @section('content')
   @while(have_posts()) @php(the_post())
     <?php
-      $specialty = get_post_meta(get_the_ID(), 'medical_specialty', true) ?: 'General';
-      $location = get_post_meta(get_the_ID(), 'medical_location', true) ?: 'No especificada';
-      $availability = get_post_meta(get_the_ID(), 'medical_availability', true) ?: 'Bajo consulta';
-      $rating = floatval(get_post_meta(get_the_ID(), 'medical_rating', true) ?: 5.0);
+      $specialty = isset($doctor) && isset($doctor['specialty']) ? $doctor['specialty'] : (get_post_meta(get_the_ID(), 'medical_specialty', true) ?: 'General');
+      $location = isset($doctor) && isset($doctor['location']) ? $doctor['location'] : (get_post_meta(get_the_ID(), 'medical_location', true) ?: 'No especificada');
+      $availability = isset($doctor) && isset($doctor['availability']) ? $doctor['availability'] : (get_post_meta(get_the_ID(), 'medical_availability', true) ?: 'Bajo consulta');
+      $rating = isset($doctor) && isset($doctor['rating']) ? floatval($doctor['rating']) : floatval(get_post_meta(get_the_ID(), 'medical_rating', true) ?: 5.0);
+      $name = isset($doctor) && isset($doctor['name']) ? $doctor['name'] : get_the_title();
     ?>
 
     <div class="relative min-h-screen bg-slate-950 text-white overflow-hidden font-sans">
@@ -16,7 +17,7 @@
 
       <div class="max-w-5xl mx-auto px-6 py-12 relative z-10">
         <!-- Back Navigation -->
-        <a href="{{ home_url('/directorio') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 uppercase tracking-wider mb-8 transition-colors">
+        <a href="{{ home_url('/doctors') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 uppercase tracking-wider mb-8 transition-colors">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
@@ -41,7 +42,7 @@
             </div>
 
             <!-- Name and Title -->
-            <h1 class="text-2xl font-extrabold text-white leading-tight mb-1">{!! get_the_title() !!}</h1>
+            <h1 class="text-2xl font-extrabold text-white leading-tight mb-1">{!! $name !!}</h1>
             <span class="text-sm font-semibold text-emerald-400 mb-3 bg-emerald-500/10 px-3 py-0.5 rounded-full border border-emerald-500/20">
               {!! $specialty !!}
             </span>
