@@ -68,70 +68,128 @@
         </div>
       </div>
 
-      <!-- Blog Section in Homepage -->
-      <div class="mt-24 border-t border-white/5 pt-16">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-          <div>
-            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Artículos Destacados</span>
-            <h2 class="text-3xl font-bold text-white mt-2">Nuestro Blog Médico</h2>
-          </div>
-          <a href="{{ home_url('/blog') }}" class="mt-4 md:mt-0 flex items-center gap-1.5 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition-colors group">
-            Ver todos los artículos
-            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
-          </a>
+      <!-- Features Section (Nuestros Servicios) -->
+      <div class="mt-32 border-t border-white/5 pt-20">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Servicios Digitales</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4">Todo lo que necesitas para cuidar de tu salud</h2>
+          <p class="mt-4 text-slate-400 text-sm md:text-base leading-relaxed">
+            Plataforma médica avanzada diseñada tanto para pacientes como para profesionales de la salud.
+          </p>
         </div>
 
-        <!-- Recent Posts Query Loop -->
-        @php
-          $recent_posts = new \WP_Query([
-            'post_type' => 'post',
-            'posts_per_page' => 3,
-            'post_status' => 'publish'
-          ]);
-        @endphp
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div class="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-emerald-500/30 transition-all duration-300 group hover:-translate-y-1 relative">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-3">Reserva de Citas en Segundos</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              Selecciona el especialista ideal, elige la fecha que mejor se adapte a tu agenda y confirma tu consulta presencial de forma digital.
+            </p>
+          </div>
 
-        @if (!$recent_posts->have_posts())
-          <div class="p-8 rounded-2xl bg-white/5 border border-white/10 text-center text-slate-400">
-            <p class="text-sm">No hay artículos publicados en este momento.</p>
+          <!-- Feature 2 -->
+          <div class="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-emerald-500/30 transition-all duration-300 group hover:-translate-y-1 relative">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-3">Historial Clínico Digital</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              Accede a tus recetas, informes diagnósticos e historial de consultas de forma centralizada y bajo los máximos estándares de seguridad de datos.
+            </p>
           </div>
-        @else
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @while ($recent_posts->have_posts()) @php($recent_posts->the_post())
-              <article class="flex flex-col rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-emerald-500/30 transition-all duration-300 group hover:-translate-y-1">
-                <a href="{{ get_permalink() }}" class="block aspect-video relative overflow-hidden bg-slate-900">
-                  @if (has_post_thumbnail())
-                    {!! get_the_post_thumbnail(null, 'medium_large', ['class' => 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300']) !!}
-                  @else
-                    <div class="w-full h-full bg-gradient-to-br from-emerald-950/80 to-slate-900 flex items-center justify-center p-6 group-hover:scale-105 transition-transform duration-300">
-                      <svg class="w-10 h-10 text-emerald-500/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.871 4A17.926 17.926 0 003 12c0 2.871.67 5.587 1.871 8m14.13 0a17.93 17.93 0 001.87-8c0-2.871-.67-5.587-1.871-8m-14.13 0A17.93 17.93 0 0112 3c2.871 0 5.587.67 8 1.87M9.07 9h5.86M9.07 13h5.86m-4.93 4h4" />
-                      </svg>
-                    </div>
-                  @endif
-                </a>
-                <div class="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 hover:text-emerald-300 transition-colors">
-                      <a href="{{ get_permalink() }}">{!! get_the_title() !!}</a>
-                    </h3>
-                    <p class="text-slate-400 text-xs line-clamp-3 mb-4 leading-relaxed">
-                      {!! wp_strip_all_tags(get_the_excerpt()) !!}
-                    </p>
-                  </div>
-                  <div class="flex items-center justify-between text-[11px] text-slate-500 pt-3 border-t border-white/5">
-                    <span>{{ get_the_date() }}</span>
-                    <a href="{{ get_permalink() }}" class="text-emerald-400 font-semibold hover:text-emerald-300 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                      Leer más &rarr;
-                    </a>
-                  </div>
-                </div>
-              </article>
-            @endwhile
-            @php(wp_reset_postdata())
+
+          <!-- Feature 3 -->
+          <div class="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-emerald-500/30 transition-all duration-300 group hover:-translate-y-1 relative">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 00-2 2z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-3">Videoconsultas Seguras</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">
+              Conecta cara a cara con tu especialista desde cualquier lugar, reduciendo tiempos de espera y desplazamientos innecesarios.
+            </p>
           </div>
-        @endif
+        </div>
+      </div>
+
+      <!-- How it works Section (Cómo Funciona) -->
+      <div class="mt-32 border-t border-white/5 pt-20">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Paso a Paso</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4">¿Cómo utilizar MD Press?</h2>
+          <p class="mt-4 text-slate-400 text-sm md:text-base leading-relaxed">
+            Hemos simplificado el acceso a la atención médica en tres sencillos pasos.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+          <!-- Step 1 -->
+          <div class="text-center p-6 relative">
+            <div class="w-16 h-16 rounded-full bg-slate-900 border-2 border-emerald-500/30 flex items-center justify-center text-xl font-bold text-white mx-auto mb-6 shadow-lg shadow-emerald-500/5">
+              1
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Busca Especialistas</h3>
+            <p class="text-slate-400 text-xs leading-relaxed max-w-xs mx-auto">
+              Utiliza nuestro buscador para filtrar por nombre o por tu especialidad médica de interés.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="text-center p-6 relative">
+            <div class="w-16 h-16 rounded-full bg-slate-900 border-2 border-emerald-500/30 flex items-center justify-center text-xl font-bold text-white mx-auto mb-6 shadow-lg shadow-emerald-500/5">
+              2
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Compara Perfiles</h3>
+            <p class="text-slate-400 text-xs leading-relaxed max-w-xs mx-auto">
+              Revisa valoraciones de otros pacientes, ubicaciones de consultorios y disponibilidad horaria del médico.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="text-center p-6 relative">
+            <div class="w-16 h-16 rounded-full bg-slate-900 border-2 border-emerald-500/30 flex items-center justify-center text-xl font-bold text-white mx-auto mb-6 shadow-lg shadow-emerald-500/5">
+              3
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Agenda tu Cita</h3>
+            <p class="text-slate-400 text-xs leading-relaxed max-w-xs mx-auto">
+              Elige el horario disponible que más te convenga y reserva tu cita directamente desde la plataforma.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Section (Únete como profesional) -->
+      <div class="mt-32">
+        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 to-slate-950 border border-white/10 p-10 md:p-16 shadow-2xl group">
+          <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full filter blur-3xl -mr-20 -mt-20"></div>
+          
+          <div class="relative z-10 max-w-2xl">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Para Médicos y Clínicas</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-4 mb-6 leading-tight">
+              ¿Eres profesional de la salud? <br class="hidden sm:inline" />
+              Digitaliza tu consulta médica
+            </h2>
+            <p class="text-slate-300 text-sm leading-relaxed mb-8">
+              Únete al directorio médico líder y llega a miles de pacientes en tu área. Gestiona tus citas de forma totalmente digital, mantén al día tu disponibilidad y ofrece videoconsultas privadas e integradas.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a href="{{ wp_login_url() }}" class="inline-flex items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer">
+                Registrar mi Consulta
+              </a>
+              <a href="{{ home_url('/about') }}" class="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-3 px-6 rounded-xl active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer">
+                Saber más
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

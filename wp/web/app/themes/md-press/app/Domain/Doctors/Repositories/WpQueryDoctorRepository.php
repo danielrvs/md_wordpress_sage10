@@ -70,7 +70,7 @@ class WpQueryDoctorRepository implements DoctorRepositoryInterface
             $args['meta_query'][] = [
                 'key' => 'medical_specialty',
                 'value' => sanitize_text_field($filters['specialty']),
-                'compare' => '=',
+                'compare' => 'LIKE',
             ];
         }
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from '@wordpress/element';
 interface Doctor {
   id: number;
   name: string;
-  specialty: string;
+  specialty: string[]; // Tipado como array de strings
   location: string;
   availability: string;
   rating: number;
@@ -17,6 +17,7 @@ export function MedicalSearchDirectory() {
 
   const [query, setQuery] = useState('');
   const [specialty, setSpecialty] = useState('');
+  const [specialties, setSpecialties] = useState<string[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(!isHomepage);
   const [page, setPage] = useState(1);
@@ -35,7 +36,7 @@ export function MedicalSearchDirectory() {
       if (response.ok) {
         const data = await response.json();
         setDoctors(data.doctors || []);
-        setTotalPages(data.pages || 1);
+        setTotalPages(data.total_pages || 1);
         setPage(currentPage);
       }
     } catch (error) {
@@ -46,6 +47,22 @@ export function MedicalSearchDirectory() {
   };
 
   useEffect(() => {
+    const fetchSpecialties = async () => {
+      try {
+        const response = await fetch('/wp-json/api/v1/specialties');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.specialties) {
+            setSpecialties(Object.values(data.specialties));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching specialties:', error);
+      }
+    };
+
+    fetchSpecialties();
+
     if (!isHomepage) {
       const params = new URLSearchParams(window.location.search);
       const searchParam = params.get('search') || '';
@@ -72,6 +89,15 @@ export function MedicalSearchDirectory() {
     setSpecialty(val);
     if (!isHomepage) {
       fetchDoctors(1, query, val);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setQuery('');
+    setSpecialty('');
+    if (!isHomepage) {
+      window.history.pushState({}, '', window.location.pathname);
+      fetchDoctors(1, '', '');
     }
   };
 
@@ -103,19 +129,26 @@ export function MedicalSearchDirectory() {
               className="w-full bg-slate-900/80 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm cursor-pointer"
             >
               <option value="">Todas las especialidades</option>
-              <option value="Cardiología">Cardiología</option>
-              <option value="Pediatría">Pediatría</option>
-              <option value="Dermatología">Dermatología</option>
-              <option value="Neurología">Neurología</option>
-              <option value="Medicina General">Medicina General</option>
+              {specialties.map((spec) => (
+                <option key={spec} value={spec}>{spec}</option>
+              ))}
             </select>
           </div>
-          <button 
-            type="submit"
-            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold py-2.5 px-4 rounded-lg shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 mt-2 text-sm cursor-pointer"
-          >
-            Buscar Especialistas
-          </button>
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <button 
+              type="submit"
+              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold py-2.5 px-4 rounded-lg shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer"
+            >
+              Buscar
+            </button>
+            <button 
+              type="button"
+              onClick={handleClearFilters}
+              className="w-full bg-white/10 hover:bg-white/15 text-white font-semibold py-2.5 px-4 rounded-lg active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer border border-white/5"
+            >
+              Limpiar
+            </button>
+          </div>
         </form>
       </div>
     );
@@ -128,7 +161,7 @@ export function MedicalSearchDirectory() {
         <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur opacity-5 group-hover:opacity-10 transition duration-300"></div>
         <div className="relative grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
           
-          <div className="md:col-span-6">
+          <div className="md:col-span-5">
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Nombre o palabra clave</label>
             <div className="relative">
               <input 
@@ -146,7 +179,7 @@ export function MedicalSearchDirectory() {
             </div>
           </div>
 
-          <div className="md:col-span-4">
+          <div className="md:col-span-3">
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Especialidad</label>
             <select 
               value={specialty}
@@ -154,11 +187,9 @@ export function MedicalSearchDirectory() {
               className="w-full bg-slate-900/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer"
             >
               <option value="">Todas las especialidades</option>
-              <option value="Cardiología">Cardiología</option>
-              <option value="Pediatría">Pediatría</option>
-              <option value="Dermatología">Dermatología</option>
-              <option value="Neurología">Neurología</option>
-              <option value="Medicina General">Medicina General</option>
+              {specialties.map((spec) => (
+                <option key={spec} value={spec}>{spec}</option>
+              ))}
             </select>
           </div>
 
@@ -168,6 +199,16 @@ export function MedicalSearchDirectory() {
               className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer"
             >
               Buscar
+            </button>
+          </div>
+
+          <div className="md:col-span-2">
+            <button 
+              type="button"
+              onClick={handleClearFilters}
+              className="w-full bg-white/10 hover:bg-white/15 text-white font-bold py-2.5 px-4 rounded-xl active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer border border-white/5"
+            >
+              Limpiar
             </button>
           </div>
 
@@ -220,7 +261,7 @@ export function MedicalSearchDirectory() {
                       </div>
                       <div className="space-y-1.5 min-w-0">
                         <span className="inline-block text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider truncate max-w-full">
-                          {doctor.specialty}
+                          {Array.isArray(doctor.specialty) ? doctor.specialty.join(', ') : doctor.specialty}
                         </span>
                         <h3 className="text-base font-extrabold text-white leading-tight group-hover:text-emerald-300 transition-colors truncate">
                           <a href={doctor.permalink}>{doctor.name}</a>
@@ -280,6 +321,7 @@ export function MedicalSearchDirectory() {
           {totalPages > 1 && (
             <div className="flex justify-center gap-4 pt-4">
               <button 
+                type="button"
                 onClick={() => fetchDoctors(page - 1)}
                 disabled={page === 1}
                 className="px-4 py-2 text-xs font-bold bg-white/5 border border-white/10 hover:border-emerald-500/30 text-white rounded-xl disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
@@ -288,6 +330,7 @@ export function MedicalSearchDirectory() {
               </button>
               <span className="flex items-center text-xs text-slate-400 font-bold">Página {page} de {totalPages}</span>
               <button 
+                type="button"
                 onClick={() => fetchDoctors(page + 1)}
                 disabled={page === totalPages}
                 className="px-4 py-2 text-xs font-bold bg-white/5 border border-white/10 hover:border-emerald-500/30 text-white rounded-xl disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"

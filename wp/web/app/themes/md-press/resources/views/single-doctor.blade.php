@@ -3,7 +3,12 @@
 @section('content')
   @while(have_posts()) @php(the_post())
     <?php
-      $specialty = isset($doctor) && isset($doctor['specialty']) ? $doctor['specialty'] : (get_post_meta(get_the_ID(), 'medical_specialty', true) ?: 'General');
+      $rawSpecialty = get_field('medical_specialty');
+      if (is_array($rawSpecialty)) {
+        $specialty = implode(', ', $rawSpecialty);
+      } else {
+        $specialty = $rawSpecialty ?: 'General';
+      }
       $location = isset($doctor) && isset($doctor['location']) ? $doctor['location'] : (get_post_meta(get_the_ID(), 'medical_location', true) ?: 'No especificada');
       $availability = isset($doctor) && isset($doctor['availability']) ? $doctor['availability'] : (get_post_meta(get_the_ID(), 'medical_availability', true) ?: 'Bajo consulta');
       $rating = isset($doctor) && isset($doctor['rating']) ? floatval($doctor['rating']) : floatval(get_post_meta(get_the_ID(), 'medical_rating', true) ?: 5.0);

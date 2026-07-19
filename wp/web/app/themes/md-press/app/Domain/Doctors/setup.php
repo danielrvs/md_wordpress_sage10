@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Doctors;
 
+use App\Domain\Doctors\Enums\Specialty;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
@@ -13,24 +14,24 @@ use Illuminate\Support\Facades\Redis;
 
 add_action('init', function () {
     $labels = [
-        'name' => 'Médicos',
+        'name' => 'Médico',
         'singular_name' => 'Médico',
         'menu_name' => 'Directorio Médico',
         'all_items' => 'Todos los Médicos',
         'add_new' => 'Añadir Nuevo',
         'add_new_item' => 'Añadir Nuevo Médico',
         'edit_item' => 'Editar Médico',
-        'menu_icon' => 'dashicons-medical',
+        'menu_icon' => 'dashicons-database-add',
     ];
 
     $args = [
         'labels' => $labels,
         'public' => true,
-        'has_archive' => true,
+        'has_archive' => false,
         'show_ui' => true,
         'show_in_menu' => true,
         'show_in_rest' => true,
-        'rewrite' => ['slug' => 'medicos', 'with_front' => false],
+        'rewrite' => ['slug' => 'doctors', 'with_front' => false],
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt'],
     ];
 
@@ -83,15 +84,20 @@ add_action('acf/init', function () {
             [
                 'key' => 'field_medical_specialty',
                 'label' => 'Especialidad Médica',
-                'name' => 'medical_specialty', // Coincide exactamente con tu DTO y repositorio
-                'type' => 'text',
+                'name' => 'medical_specialty',
+                'type' => 'select',
+                'choices' => array_reduce(Specialty::cases(), function ($carry, Specialty $case) {
+                    $carry[$case->value] = $case->value;
+                    return $carry;
+                }, []),
+                'multiple' => 1,
+                'ui' => 1,
                 'required' => 1,
-                'placeholder' => 'Ej: Cardiología, Pediatría...',
             ],
             [
                 'key' => 'field_medical_location',
                 'label' => 'Ubicación / Consultorio',
-                'name' => 'medical_location', // Coincide con tu DTO y repositorio
+                'name' => 'medical_location',
                 'type' => 'text',
                 'required' => 1,
                 'placeholder' => 'Ej: Planta 2, Consultorio 204 o Madrid, Centro',
@@ -99,7 +105,7 @@ add_action('acf/init', function () {
             [
                 'key' => 'field_medical_availability',
                 'label' => 'Disponibilidad',
-                'name' => 'medical_availability', // Coincide con tu DTO y repositorio
+                'name' => 'medical_availability',
                 'type' => 'select',
                 'choices' => [
                     'Inmediata' => 'Inmediata',
@@ -112,7 +118,7 @@ add_action('acf/init', function () {
             [
                 'key' => 'field_medical_rating',
                 'label' => 'Puntuación Inicial (Rating)',
-                'name' => 'medical_rating', // Coincide con tu DTO y repositorio
+                'name' => 'medical_rating',
                 'type' => 'number',
                 'default_value' => '5.0',
                 'min' => '1',
@@ -123,7 +129,7 @@ add_action('acf/init', function () {
             [
                 'key' => 'field_assigned_user_id',
                 'label' => 'Usuario de WordPress Vinculado',
-                'name' => '_assigned_user_id', // Coincide con la lógica de login que planteamos
+                'name' => '_assigned_user_id',
                 'type' => 'user',
                 'instructions' => 'Asigna el usuario de acceso para que este médico pueda gestionar su perfil.',
                 'role' => ['medical_professional', 'administrator'],
@@ -137,23 +143,39 @@ add_action('acf/init', function () {
                 [
                     'param' => 'post_type',
                     'operator' => '==',
-                    'value' => 'doctor', // Se asocia exclusivamente a nuestro CPT
+                    'value' => 'doctor',
                 ],
             ],
         ],
         'menu_order' => 0,
-        'position' => 'normal', // Los renderiza justo debajo del editor Gutenberg
+        'position' => 'normal',
         'style' => 'default',
         'label_placement' => 'top',
         'instruction_placement' => 'label',
     ]);
 });
 
+/**
+ * Registrar Comandos en WP-CLI
+ */
+
+if (defined('WP_CLI') && WP_CLI) {
+    \WP_CLI::add_command('doctor:seed', \App\Domain\Doctors\Cli\DoctorSeeder::class);
+}
+
 // router 
 add_action('rest_api_init', function () {
     register_rest_route('api/v1', '/doctors', [
         'methods' => 'GET',
         'callback' => [app(\App\Domain\Doctors\Http\Controllers\DoctorController::class), 'index'],
+        'permission_callback' => '__return_true',
+    ]);
+});
+
+add_action('rest_api_init', function () {
+    register_rest_route('api/v1', '/specialties', [
+        'methods' => 'GET',
+        'callback' => [app(\App\Domain\Doctors\Http\Controllers\SpecialtyController::class), 'index'],
         'permission_callback' => '__return_true',
     ]);
 });

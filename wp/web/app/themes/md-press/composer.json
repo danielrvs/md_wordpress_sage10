@@ -43,6 +43,7 @@
     "roots/acorn": "^6.0"
   },
   "require-dev": {
+    "fakerphp/faker": "^1.24",
     "laravel/pint": "^1.20"
   },
   "suggest": {
