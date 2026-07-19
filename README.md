@@ -43,10 +43,16 @@ Para detener el entorno, ejecuta:
 ```
 
 ### 2. Ejecutar la instalación inicial (Setup)
-La primera vez que levantes el entorno, es necesario ejecutar el script de aprovisionamiento para descargar dependencias de PHP y Node, instalar la base de datos de WordPress, activar el tema `md-press` y habilitar los plugins principales (como ACF y Redis Cache):
+La primera vez que levantes el entorno, es necesario ejecutar el script de aprovisionamiento para descargar dependencias de PHP y Node, instalar la base de datos de WordPress, activar el tema `md-press` y habilitar los plugins principales (como ACF y Redis Cache).
+
+Por defecto, la instalación inicial se realiza limpia. Si deseas aprovisionar el entorno incluyendo un conjunto de datos demo auto-generados (25 médicos y sus respectivos calendarios semanales y ausencias), pasa el parámetro `--with-data`:
 
 ```bash
+# Instalación limpia (Recomendado para iniciar de cero)
 docker-compose -f infrastructure/docker-compose.dev.yml exec app /app/wp/bin/setup.sh
+
+# Instalación con datos demo precargados (especialistas y horarios)
+docker-compose -f infrastructure/docker-compose.dev.yml exec app /app/wp/bin/setup.sh --with-data
 ```
 
 ### 3. URL de Acceso

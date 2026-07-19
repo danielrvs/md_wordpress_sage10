@@ -6,6 +6,14 @@ set -e
 THEME_NAME="md-press"
 THEME_DIR="/app/wp/web/app/themes/${THEME_NAME}"
 
+# Variables de configuración de ejecución
+WITH_DATA=false
+for arg in "$@"; do
+    if [ "$arg" = "--with-data" ]; then
+        WITH_DATA=true
+    fi
+done
+
 # Colores para output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -117,4 +125,17 @@ else
     exit 1
 fi
 
+log_info "Migrando tablas de schema..."
+wp schedule:migrate --allow-root
+log_success "✅ Tablas de schema migradas correctamente"
+
 log_success "🎉 Entorno aprovisionado y listo para desarrollo enterprise!"
+
+if [ "$WITH_DATA" = true ]; then
+    log_info "Generando datos demo para el directorio médico..."
+    wp doctor:seed --count=25 --allow-root
+    wp schedule:seed --allow-root
+    log_success "✅ Datos demo generados correctamente"
+else
+    log_info "Saltando la generación de datos demo (ejecuta con --with-data si deseas incluirlos)."
+fi
