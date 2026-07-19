@@ -17,13 +17,12 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "esModuleInterop": true,
         "jsx": "react-jsx",
         /* Mapeo de rutas requerido por Shadcn/ui */
-        "baseUrl": ".",
         "paths": {
             "@/*": [
                 "./resources/*"

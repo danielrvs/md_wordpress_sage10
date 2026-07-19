@@ -21,6 +21,8 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "@wordpress/dom-ready": "^4.51.0",
+    "@wordpress/element": "^8.3.0",
     "laravel-vite-plugin": "^3.0.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^7.0.2",
