@@ -50,4 +50,25 @@ class WpDbScheduleRepository implements ScheduleRepositoryInterface
 
         return (int) $wpdb->get_var($query) > 0;
     }
+
+    public function syncWeeklyRules(int $doctorId, array $rules): void
+    {
+        global $wpdb;
+
+        $wpdb->query('START TRANSACTION');
+
+        $wpdb->delete($this->tableWeekly, ['doctor_id' => $doctorId], ['%d']);
+
+        foreach ($rules as $rule) {
+            $wpdb->insert($this->tableWeekly, [
+                'doctor_id' => $doctorId,
+                'day_of_week' => (int) $rule['day_of_week'],
+                'start_time' => sanitize_text_field($rule['start_time']),
+                'end_time' => sanitize_text_field($rule['end_time']),
+                'slot_duration' => (int) $rule['slot_duration'],
+            ]);
+        }
+
+        $wpdb->query('COMMIT');
+    }
 }

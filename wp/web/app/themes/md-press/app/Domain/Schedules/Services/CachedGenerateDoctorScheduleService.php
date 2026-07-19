@@ -20,13 +20,10 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
 
     public function execute(int $doctorId, string $date): ScheduleDTO
     {
+        $tag = "doctor_schedules:{$doctorId}";
+        $cacheKey = "date:{$date}";
 
-
-        $cacheKey = sprintf('doctor_schedules:id_%d:date_%s', $doctorId, $date);
-
-
-        $cachedData = Cache::get($cacheKey);
-
+        $cachedData = Cache::tags($tag)->get($cacheKey);
 
         if (is_array($cachedData)) {
             return ScheduleDTO::fromArray($cachedData);
@@ -34,7 +31,7 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
 
         $schedule = $this->innerService->execute($doctorId, $date);
 
-        Cache::put($cacheKey, $schedule->toArray(), self::TTL);
+        Cache::tags([$tag])->put($cacheKey, $schedule->toArray(), self::TTL);
 
         return $schedule;
     }
