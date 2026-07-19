@@ -48,7 +48,8 @@ class DoctorDTO
             location: get_post_meta($post->ID, 'medical_location', true) ?: 'No especificada',
             availability: get_post_meta($post->ID, 'medical_availability', true) ?: 'Bajo consulta',
             rating: (float) (get_post_meta($post->ID, 'medical_rating', true) ?: 0.0),
-            thumbnail: get_the_post_thumbnail_url($post->ID, 'thumbnail') ?: null,
+            thumbnail: get_the_post_thumbnail_url($post->ID, 'medium')
+            ?: (get_post_meta($post->ID, '_mock_avatar_url', true) ?: null),
             permalink: get_permalink($post->ID) ?: null,
             assignedUserId: $assignedUser ? (int) $assignedUser : null
         );

@@ -13,6 +13,7 @@
       $availability = isset($doctor) && isset($doctor['availability']) ? $doctor['availability'] : (get_post_meta(get_the_ID(), 'medical_availability', true) ?: 'Bajo consulta');
       $rating = isset($doctor) && isset($doctor['rating']) ? floatval($doctor['rating']) : floatval(get_post_meta(get_the_ID(), 'medical_rating', true) ?: 5.0);
       $name = isset($doctor) && isset($doctor['name']) ? $doctor['name'] : get_the_title();
+      $avatarUrl = get_the_post_thumbnail_url(get_the_ID(), 'medium') ?: (get_post_meta(get_the_ID(), '_mock_avatar_url', true) ?: null);
     ?>
 
     <div class="relative min-h-screen bg-slate-950 text-white overflow-hidden font-sans">
@@ -35,9 +36,9 @@
           <!-- Left Column (Profile card) -->
           <div class="md:col-span-1 p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-xl flex flex-col items-center text-center">
             <!-- Profile Thumbnail -->
-            <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-emerald-500/30 mb-4 bg-slate-900 flex items-center justify-center shadow-lg shadow-emerald-500/10">
-              @if (has_post_thumbnail())
-                {!! get_the_post_thumbnail(null, 'thumbnail', ['class' => 'w-full h-full object-cover']) !!}
+            <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-emerald-500/30 mb-4 bg-slate-900 flex items-center justify-center shadow-lg shadow-emerald-500/10 shrink-0">
+              @if ($avatarUrl)
+                <img src="{{ $avatarUrl }}" alt="{{ $name }}" class="w-full h-full object-cover" />
               @else
                 <!-- Doctor Avatar Placeholder -->
                 <svg class="w-16 h-16 text-emerald-500/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">

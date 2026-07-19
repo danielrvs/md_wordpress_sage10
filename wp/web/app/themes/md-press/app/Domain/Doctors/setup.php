@@ -51,21 +51,14 @@ function invalidate_doctor_cache(int $postId): void
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
         return;
     }
+
     Cache::forget("doctors:id:{$postId}");
 
     try {
-        $redis = Redis::connection();
-        $prefix = config('cache.prefix', 'laravel_cache') . ':';
-        $keys = $redis->keys($prefix . 'doctors:*');
-
-        if (!empty($keys)) {
-            foreach ($keys as $key) {
-                $cleanKey = str_replace($prefix, '', $key);
-                Cache::forget($cleanKey);
-            }
-        }
+        $version = (int) Cache::get('doctors:cache_version', 1);
+        Cache::put('doctors:cache_version', $version + 1, 86400 * 30);
     } catch (\Throwable $e) {
-        error_log('Error al invalidar la caché de médicos en Redis: ' . $e->getMessage());
+        error_log('Error al incrementar la versión de caché de médicos: ' . $e->getMessage());
     }
 }
 

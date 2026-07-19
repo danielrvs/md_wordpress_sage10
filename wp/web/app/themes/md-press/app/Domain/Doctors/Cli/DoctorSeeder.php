@@ -23,12 +23,12 @@ class DoctorSeeder
         foreach ($mockDoctors as $data) {
             //validar que no haya dos médicos con el mismo nombre
             $existing = new \WP_Query([
-                'post_type'              => 'doctor',
-                'title'                  => $data['name'],
-                'post_status'            => 'any',
-                'posts_per_page'         => 1,
-                'no_found_rows'          => true,
-                'ignore_sticky_posts'    => true,
+                'post_type' => 'doctor',
+                'title' => $data['name'],
+                'post_status' => 'any',
+                'posts_per_page' => 1,
+                'no_found_rows' => true,
+                'ignore_sticky_posts' => true,
                 'update_post_term_cache' => false,
                 'update_post_meta_cache' => false,
             ]);
@@ -52,6 +52,8 @@ class DoctorSeeder
             update_field('medical_location', $data['location'], $postId);
             update_field('medical_availability', $data['availability'], $postId);
             update_field('medical_rating', $data['rating'], $postId);
+
+            update_post_meta($postId, '_mock_avatar_url', $data['avatar_url']);
 
             if ($defaultAdminId) {
                 update_field('_assigned_user_id', $defaultAdminId, $postId);

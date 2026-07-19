@@ -36,6 +36,10 @@ class DoctorFactory
         $lastName = $this->faker->lastName() . ' ' . $this->faker->lastName();
         $prefix = $gender === 'male' ? 'Dr. ' : 'Dra. ';
 
+        $portraitGender = $gender === 'male' ? 'men' : 'women';
+        $avatarId = $this->faker->numberBetween(1, 99);
+        $avatarUrl = "https://randomuser.me/api/portraits/{$portraitGender}/{$avatarId}.jpg";
+
         return [
             'name' => $prefix . $firstName . ' ' . $lastName,
             'bio' => $this->faker->paragraph(3),
@@ -43,6 +47,7 @@ class DoctorFactory
             'location' => $this->faker->city() . ', Consultorio ' . $this->faker->numberBetween(100, 500),
             'availability' => $this->faker->randomElement($availabilities),
             'rating' => $this->faker->randomFloat(1, 2.5, 5.0),
+            'avatar_url' => $avatarUrl
         ];
     }
 

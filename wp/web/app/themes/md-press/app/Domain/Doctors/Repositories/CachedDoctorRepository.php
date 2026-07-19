@@ -16,6 +16,11 @@ class CachedDoctorRepository implements DoctorRepositoryInterface
     ) {
     }
 
+    private function getVersion(): int
+    {
+        return (int) Cache::get('doctors:cache_version', 1);
+    }
+
     public function all(int $page, int $perPage = 10): array
     {
         return $this->search([], $page, $perPage);
@@ -35,8 +40,9 @@ class CachedDoctorRepository implements DoctorRepositoryInterface
 
     public function search(array $filters, int $page, int $perPage = 10): array
     {
+        $version = $this->getVersion();
         $filtersHash = md5(serialize($filters));
-        $key = "doctors:search:{$filtersHash}:p_{$page}:per_{$perPage}";
+        $key = "doctors:search:v{$version}:{$filtersHash}:p_{$page}:per_{$perPage}";
 
         // Almacenamos una colección de arrays
         $cachedArray = Cache::remember($key, self::TTL, function () use ($filters, $page, $perPage) {
@@ -50,8 +56,9 @@ class CachedDoctorRepository implements DoctorRepositoryInterface
 
     public function count(array $filters): int
     {
+        $version = $this->getVersion();
         $filtersHash = md5(serialize($filters));
-        $key = "doctors:count:{$filtersHash}";
+        $key = "doctors:count:v{$version}:{$filtersHash}";
 
         // Los enteros se guardan de forma nativa sin problemas
         return (int) Cache::remember($key, self::TTL, function () use ($filters) {
