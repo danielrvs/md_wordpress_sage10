@@ -25,7 +25,6 @@ class GenerateDoctorScheduleService implements GenerateDoctorScheduleServiceInte
         if ($this->repository->hasAbsence($doctorId, $date)) {
             return new ScheduleDTO($doctorId, $date, false, []);
         }
-
         $timestamp = strtotime($date);
         $dayOfWeek = (int) date('N', $timestamp); // 1 (Lunes) a 7 (Domingo)
 

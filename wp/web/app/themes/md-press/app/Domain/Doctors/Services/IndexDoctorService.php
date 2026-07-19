@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Doctors\Services;
 
-use App\Domain\Doctors\Repositories\DoctorRepositoryInterface;
+use App\Domain\Doctors\Contracts\DoctorRepositoryInterface;
 
 class IndexDoctorService
 {

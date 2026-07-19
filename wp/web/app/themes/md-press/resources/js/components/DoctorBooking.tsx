@@ -8,9 +8,9 @@ interface Slot {
 }
 
 interface Schedule {
-  doctor_id: number;
+  doctorId: number;
   date: string;
-  is_available: boolean;
+  isWorkday: boolean;
   slots: Slot[];
 }
 
@@ -104,7 +104,7 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
       {/* Slots display */}
       {!loading && (
         <>
-          {schedule && schedule.is_available && schedule.slots.length > 0 ? (
+          {schedule && schedule.isWorkday && schedule.slots.length > 0 ? (
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {schedule.slots.map((slot, index) => {

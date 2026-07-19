@@ -14,19 +14,20 @@ class ScheduleDTO
         public string $date, // Formato Y-m-d
         public bool $isWorkday,
         public array $slots
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {
         $slots = array_map(
-            fn (array $slot) => SlotDTO::fromArray($slot),
+            fn(array $slot) => SlotDTO::fromArray($slot),
             $data['slots'] ?? []
         );
 
         return new self(
-            doctorId: (int) $data['doctor_id'],
+            doctorId: (int) $data['doctorId'],
             date: $data['date'],
-            isWorkday: (bool) ($data['is_workday'] ?? true),
+            isWorkday: (bool) ($data['isWorkday'] ?? true),
             slots: $slots
         );
     }
@@ -34,10 +35,10 @@ class ScheduleDTO
     public function toArray(): array
     {
         return [
-            'doctorId'  => $this->doctorId,
-            'date'      => $this->date,
+            'doctorId' => $this->doctorId,
+            'date' => $this->date,
             'isWorkday' => $this->isWorkday,
-            'slots'     => array_map(fn (SlotDTO $slot) => $slot->toArray(), $this->slots),
+            'slots' => array_map(fn(SlotDTO $slot) => $slot->toArray(), $this->slots),
         ];
     }
 }

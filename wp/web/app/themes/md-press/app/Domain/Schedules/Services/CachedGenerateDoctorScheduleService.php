@@ -20,9 +20,13 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
 
     public function execute(int $doctorId, string $date): ScheduleDTO
     {
+
+
         $cacheKey = sprintf('doctor_schedules:id_%d:date_%s', $doctorId, $date);
 
+
         $cachedData = Cache::get($cacheKey);
+
 
         if (is_array($cachedData)) {
             return ScheduleDTO::fromArray($cachedData);

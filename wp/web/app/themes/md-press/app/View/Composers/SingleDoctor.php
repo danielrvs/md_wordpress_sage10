@@ -3,7 +3,7 @@
 namespace App\View\Composers;
 
 use Roots\Acorn\View\Composer;
-use App\Domain\Doctors\Repositories\DoctorRepositoryInterface;
+use App\Domain\Doctors\Contracts\DoctorRepositoryInterface;
 
 class SingleDoctor extends Composer
 {
