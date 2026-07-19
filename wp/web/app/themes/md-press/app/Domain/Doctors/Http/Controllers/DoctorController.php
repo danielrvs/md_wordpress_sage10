@@ -7,7 +7,7 @@ use App\Domain\Doctors\Services\IndexDoctorService;
 class DoctorController
 {
     public function __construct(
-        protected IndexDoctorService $indexService
+        private readonly IndexDoctorService $indexService
     ) {
     }
 
