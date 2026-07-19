@@ -116,7 +116,6 @@ class ScheduleSeeder
                 'slot_duration' => $chosenDuration,
             ]);
 
-            // 2. Persistencia en Postmeta mapeando las pestañas individuales de ACF Free
             update_field("works_{$day}", 1, $doctorId);
             update_field("start_{$day}", $chosenShift['start'], $doctorId);
             update_field("end_{$day}", $chosenShift['end'], $doctorId);
