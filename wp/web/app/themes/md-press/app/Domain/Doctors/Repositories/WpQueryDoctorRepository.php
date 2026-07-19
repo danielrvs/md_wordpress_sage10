@@ -62,16 +62,56 @@ class WpQueryDoctorRepository implements DoctorRepositoryInterface
             'meta_query' => [],
         ];
 
-        if (!empty($filters['search'])) {
-            $args['s'] = sanitize_text_field($filters['search']);
-        }
-
         if (!empty($filters['specialty'])) {
             $args['meta_query'][] = [
                 'key' => 'medical_specialty',
                 'value' => sanitize_text_field($filters['specialty']),
                 'compare' => 'LIKE',
             ];
+        }
+
+        if (!empty($filters['search'])) {
+            $keyword = sanitize_text_field($filters['search']);
+
+            $queryS = new WP_Query([
+                'post_type' => 'doctor',
+                'post_status' => 'publish',
+                's' => $keyword,
+                'fields' => 'ids',
+                'posts_per_page' => -1,
+                'no_found_rows' => true,
+            ]);
+            $idsFromS = $queryS->posts;
+
+            $queryMeta = new WP_Query([
+                'post_type' => 'doctor',
+                'post_status' => 'publish',
+                'fields' => 'ids',
+                'posts_per_page' => -1,
+                'no_found_rows' => true,
+                'meta_query' => [
+                    'relation' => 'OR',
+                    [
+                        'key' => 'medical_specialty',
+                        'value' => $keyword,
+                        'compare' => 'LIKE',
+                    ],
+                    [
+                        'key' => 'medical_location',
+                        'value' => $keyword,
+                        'compare' => 'LIKE',
+                    ]
+                ]
+            ]);
+            $idsFromMeta = $queryMeta->posts;
+
+            $matchedIds = array_unique(array_merge($idsFromS, $idsFromMeta));
+
+            if (!empty($matchedIds)) {
+                $args['post__in'] = $matchedIds;
+            } else {
+                $args['post__in'] = [0];
+            }
         }
 
         return $args;
