@@ -5,6 +5,11 @@ namespace App\Providers;
 use App\Domain\Doctors\Repositories\CachedDoctorRepository;
 use App\Domain\Doctors\Repositories\DoctorRepositoryInterface;
 use App\Domain\Doctors\Repositories\WpQueryDoctorRepository;
+use App\Domain\Schedules\Contracts\GenerateDoctorScheduleServiceInterface;
+use App\Domain\Schedules\Contracts\ScheduleRepositoryInterface;
+use App\Domain\Schedules\Repositories\WpDbScheduleRepository;
+use App\Domain\Schedules\Services\CachedGenerateDoctorScheduleService;
+use App\Domain\Schedules\Services\GenerateDoctorScheduleService;
 use Roots\Acorn\Sage\SageServiceProvider;
 
 class ThemeServiceProvider extends SageServiceProvider
@@ -17,9 +22,28 @@ class ThemeServiceProvider extends SageServiceProvider
     public function register()
     {
         parent::register();
+
+        $this->app->booting(function () {
+            \Illuminate\Support\Facades\Cache::extend('wordpress', function () {
+                return \Illuminate\Support\Facades\Cache::repository(new WordPressCacheStore());
+            });
+            config([
+                'cache.stores.wordpress' => ['driver' => 'wordpress'],
+                'cache.default' => 'wordpress'
+            ]);
+        });
+
         $this->app->bind(DoctorRepositoryInterface::class, WpQueryDoctorRepository::class);
         $this->app->extend(DoctorRepositoryInterface::class, function ($repository, $app) {
             return new CachedDoctorRepository($repository);
+        });
+
+        $this->app->bind(ScheduleRepositoryInterface::class, WpDbScheduleRepository::class);
+
+        $this->app->singleton(GenerateDoctorScheduleServiceInterface::class, function ($c) {
+            return new CachedGenerateDoctorScheduleService(
+                new GenerateDoctorScheduleService($c->make(ScheduleRepositoryInterface::class))
+            );
         });
     }
 
