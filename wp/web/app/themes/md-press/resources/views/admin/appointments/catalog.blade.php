@@ -27,7 +27,7 @@
                     </td>
                     <td style="padding: 12px;">
                         <span class="badge" style="background: #e1ecf4; color: #0c4b78; padding: 4px 8px; border-radius: 12px; font-weight: 600; font-size: 12px;">
-                            {{ $count }} citas pendientes
+                            {{ $count }} citas
                         </span>
                     </td>
                     <td style="padding: 12px; text-align: right;">
