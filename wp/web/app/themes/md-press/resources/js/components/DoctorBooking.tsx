@@ -1,4 +1,5 @@
 import { useState } from '@wordpress/element';
+import { Button } from './Button';
 
 interface Slot {
   start_time: string;
@@ -155,12 +156,13 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
                       ¡Cita Reservada con Éxito!
                     </div>
                   ) : (
-                    <button
+                    <Button
                       onClick={handleBookSlot}
-                      className="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold py-2.5 px-5 rounded-xl active:scale-[0.98] transition-all text-xs shrink-0 shadow-lg shadow-emerald-500/10"
+                      variant="primary"
+                      className="py-2.5 px-5 text-xs shrink-0"
                     >
                       Confirmar Reserva
-                    </button>
+                    </Button>
                   )}
                 </div>
               )}

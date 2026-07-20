@@ -181,12 +181,12 @@
               Únete al directorio médico líder y llega a miles de pacientes en tu área. Gestiona tus citas de forma totalmente digital, mantén al día tu disponibilidad y ofrece videoconsultas privadas e integradas.
             </p>
             <div class="flex flex-col sm:flex-row gap-4">
-              <a href="{{ wp_login_url() }}" class="inline-flex items-center justify-center bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer">
+              <x-button :href="wp_login_url()" class="py-3 px-6">
                 Registrar mi Consulta
-              </a>
-              <a href="{{ home_url('/pricing') }}" class="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold py-3 px-6 rounded-xl active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer">
+              </x-button>
+              <x-button variant="glass" :href="home_url('/pricing')" class="py-3 px-6">
                 Ver Planes
-              </a>
+              </x-button>
             </div>
           </div>
         </div>

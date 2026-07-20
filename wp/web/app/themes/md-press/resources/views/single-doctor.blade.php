@@ -112,9 +112,9 @@
             </div>
 
             <!-- Primary Action -->
-            <button class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 mt-6 text-sm">
+            <x-button variant="primary" class="w-full py-2.5 px-4 mt-6">
               Solicitar Cita
-            </button>
+            </x-button>
           </div>
 
           <!-- Right Column (Details / Biography & Custom schedules) -->

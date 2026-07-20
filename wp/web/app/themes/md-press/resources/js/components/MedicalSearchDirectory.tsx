@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from '@wordpress/element';
+import { Button } from './Button';
 
 interface Doctor {
   id: number;
@@ -67,10 +68,10 @@ export function MedicalSearchDirectory() {
       const params = new URLSearchParams(window.location.search);
       const searchParam = params.get('search') || '';
       const specialtyParam = params.get('specialty') || '';
-      
+
       setQuery(searchParam);
       setSpecialty(specialtyParam);
-      
+
       fetchDoctors(1, searchParam, specialtyParam);
     }
   }, []);
@@ -113,17 +114,17 @@ export function MedicalSearchDirectory() {
         <form onSubmit={handleSearchSubmit} className="space-y-3">
           <div>
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Nombre o Palabra Clave</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ej. Dr. Alejandro Ruiz, Pediatría..." 
+              placeholder="Ej. Dr. Alejandro Ruiz, Pediatría..."
               className="w-full bg-slate-900/80 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm"
             />
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Especialidad</label>
-            <select 
+            <select
               value={specialty}
               onChange={(e) => handleSpecialtyChange(e.target.value)}
               className="w-full bg-slate-900/80 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm cursor-pointer"
@@ -135,19 +136,21 @@ export function MedicalSearchDirectory() {
             </select>
           </div>
           <div className="grid grid-cols-2 gap-3 pt-2">
-            <button 
+            <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold py-2.5 px-4 rounded-lg shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer"
+              variant="primary"
+              className="w-full py-2.5 px-4 text-white"
             >
               Buscar
-            </button>
-            <button 
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
               onClick={handleClearFilters}
-              className="w-full bg-white/10 hover:bg-white/15 text-white font-semibold py-2.5 px-4 rounded-lg active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer border border-white/5"
+              className="w-full py-2.5 px-4"
             >
               Limpiar
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -160,15 +163,15 @@ export function MedicalSearchDirectory() {
       <form onSubmit={handleSearchSubmit} className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl relative group hover:border-emerald-500/20 transition-all duration-300">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl blur opacity-5 group-hover:opacity-10 transition duration-300"></div>
         <div className="relative grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-          
+
           <div className="md:col-span-5">
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Nombre o palabra clave</label>
             <div className="relative">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ej. Dr. Alejandro Ruiz, Pediatra..." 
+                placeholder="Ej. Dr. Alejandro Ruiz, Pediatra..."
                 className="w-full bg-slate-900/80 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
               />
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
@@ -181,7 +184,7 @@ export function MedicalSearchDirectory() {
 
           <div className="md:col-span-3">
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Especialidad</label>
-            <select 
+            <select
               value={specialty}
               onChange={(e) => handleSpecialtyChange(e.target.value)}
               className="w-full bg-slate-900/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer"
@@ -194,22 +197,24 @@ export function MedicalSearchDirectory() {
           </div>
 
           <div className="md:col-span-2">
-            <button 
+            <Button
               type="submit"
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer"
+              variant="primary"
+              className="w-full py-2.5 px-4"
             >
               Buscar
-            </button>
+            </Button>
           </div>
 
           <div className="md:col-span-2">
-            <button 
+            <Button
               type="button"
+              variant="secondary"
               onClick={handleClearFilters}
-              className="w-full bg-white/10 hover:bg-white/15 text-white font-bold py-2.5 px-4 rounded-xl active:scale-[0.98] transition-all duration-200 text-sm cursor-pointer border border-white/5"
+              className="w-full py-2.5 px-4"
             >
               Limpiar
-            </button>
+            </Button>
           </div>
 
         </div>
@@ -237,7 +242,7 @@ export function MedicalSearchDirectory() {
             {doctors.map((doctor) => {
               const fullStars = Math.floor(doctor.rating);
               const hasHalf = (doctor.rating - fullStars) >= 0.5;
-              
+
               let availabilityClass = "bg-slate-500/10 text-slate-400 border-slate-500/20";
               if (doctor.availability === 'Inmediata') {
                 availabilityClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
@@ -248,7 +253,7 @@ export function MedicalSearchDirectory() {
               return (
                 <div key={doctor.id} className="flex flex-col justify-between rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-emerald-500/30 transition-all duration-300 group hover:-translate-y-1 shadow-lg shadow-black/10">
                   <div className="p-6 space-y-4">
-                    
+
                     <div className="flex gap-4 items-start">
                       <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-900 border border-white/10 flex items-center justify-center shrink-0">
                         {doctor.thumbnail ? (
@@ -277,7 +282,7 @@ export function MedicalSearchDirectory() {
                         </svg>
                         <span className="truncate">{doctor.location}</span>
                       </div>
-                      
+
                       <div className="flex items-center gap-2">
                         <svg className="w-3.5 h-3.5 text-slate-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -292,11 +297,11 @@ export function MedicalSearchDirectory() {
                           {Array.from({ length: 5 }).map((_, index) => {
                             const i = index + 1;
                             if (i <= fullStars) {
-                              return <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>;
+                              return <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>;
                             } else if (i === fullStars + 1 && hasHalf) {
-                              return <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><defs><linearGradient id={`half-${doctor.id}`}><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="#475569" stop-opacity="1"/></linearGradient></defs><path fill={`url(#half-${doctor.id})`} d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>;
+                              return <svg key={i} className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><defs><linearGradient id={`half-${doctor.id}`}><stop offset="50%" stop-color="currentColor" /><stop offset="50%" stop-color="#475569" stop-opacity="1" /></linearGradient></defs><path fill={`url(#half-${doctor.id})`} d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>;
                             } else {
-                              return <svg key={i} className="w-3.5 h-3.5 text-slate-600 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>;
+                              return <svg key={i} className="w-3.5 h-3.5 text-slate-600 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>;
                             }
                           })}
                         </div>
@@ -307,9 +312,13 @@ export function MedicalSearchDirectory() {
                   </div>
 
                   <div className="p-4 bg-white/5 border-t border-white/5 flex">
-                    <a href={doctor.permalink} className="w-full text-center bg-slate-900/60 hover:bg-emerald-500 hover:text-slate-950 text-slate-300 font-bold py-2 rounded-xl text-xs transition-all duration-200 cursor-pointer">
+                    <Button
+                      href={doctor.permalink}
+                      variant="secondary"
+                      className="w-full py-2.5 text-sm"
+                    >
                       Ver Perfil Completo
-                    </a>
+                    </Button>
                   </div>
 
                 </div>
@@ -320,23 +329,25 @@ export function MedicalSearchDirectory() {
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="flex justify-center gap-4 pt-4">
-              <button 
+              <Button
                 type="button"
+                variant="glass"
                 onClick={() => fetchDoctors(page - 1)}
                 disabled={page === 1}
-                className="px-4 py-2 text-xs font-bold bg-white/5 border border-white/10 hover:border-emerald-500/30 text-white rounded-xl disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+                className="px-4 py-2 text-xs disabled:opacity-30 disabled:pointer-events-none"
               >
                 &larr; Anterior
-              </button>
+              </Button>
               <span className="flex items-center text-xs text-slate-400 font-bold">Página {page} de {totalPages}</span>
-              <button 
+              <Button
                 type="button"
+                variant="glass"
                 onClick={() => fetchDoctors(page + 1)}
                 disabled={page === totalPages}
-                className="px-4 py-2 text-xs font-bold bg-white/5 border border-white/10 hover:border-emerald-500/30 text-white rounded-xl disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer"
+                className="px-4 py-2 text-xs disabled:opacity-30 disabled:pointer-events-none"
               >
                 Siguiente &rarr;
-              </button>
+              </Button>
             </div>
           )}
         </div>
