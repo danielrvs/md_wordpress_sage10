@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Schedules\Services;
 
+use App\Domain\Appointments\Contracts\AppointmentRepositoryInterface;
 use App\Domain\Schedules\Contracts\GenerateDoctorScheduleServiceInterface;
 use App\Domain\Schedules\Contracts\ScheduleRepositoryInterface;
 use App\Domain\Schedules\DTOs\ScheduleDTO;
@@ -13,36 +14,70 @@ use DateTime;
 
 class GenerateDoctorScheduleService implements GenerateDoctorScheduleServiceInterface
 {
-    private ScheduleRepositoryInterface $repository;
-
-    public function __construct(ScheduleRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(
+        private readonly ScheduleRepositoryInterface $scheduleRepository,
+        private readonly AppointmentRepositoryInterface $appointmentRepository
+    ) {
     }
 
     public function execute(int $doctorId, string $date): ScheduleDTO
     {
-        if ($this->repository->hasAbsence($doctorId, $date)) {
-            return new ScheduleDTO($doctorId, $date, false, []);
+        if ($this->isDoctorAbsent($doctorId, $date)) {
+            return ScheduleDTO::unavailable($doctorId, $date);
         }
-        $timestamp = strtotime($date);
-        $dayOfWeek = (int) date('N', $timestamp); // 1 (Lunes) a 7 (Domingo)
 
-        $rules = $this->repository->getWeeklyRules($doctorId, $dayOfWeek);
+        $rules = $this->getWorkdayRules($doctorId, $date);
         if (empty($rules)) {
-            return new ScheduleDTO($doctorId, $date, false, []);
+            return ScheduleDTO::unavailable($doctorId, $date);
         }
 
+        $slots = $this->buildSlotsFromRules($date, $rules);
+        $slots = $this->applyBookingAvailability($doctorId, $date, $slots);
+
+        return new ScheduleDTO($doctorId, $date, true, $slots);
+    }
+
+    private function isDoctorAbsent(int $doctorId, string $date): bool
+    {
+        return $this->scheduleRepository->hasAbsence($doctorId, $date);
+    }
+
+    private function getWorkdayRules(int $doctorId, string $date): array
+    {
+        $dayOfWeek = (int) date('N', strtotime($date)); // 1 (Lunes) a 7 (Domingo)
+
+        return $this->scheduleRepository->getWeeklyRules($doctorId, $dayOfWeek);
+    }
+
+
+    private function buildSlotsFromRules(string $date, array $rules): array
+    {
         $slots = [];
         foreach ($rules as $rule) {
             $slots = array_merge($slots, $this->generateSlotsFromRule($date, $rule));
         }
 
-        //TODO: VALIDACIÓN DE CITAS
-
-        return new ScheduleDTO($doctorId, $date, true, $slots);
+        return $slots;
     }
 
+    private function applyBookingAvailability(int $doctorId, string $date, array $slots): array
+    {
+        $bookedTimes = $this->appointmentRepository->getBookedStartTimes($doctorId, $date);
+
+        if (empty($bookedTimes)) {
+            return $slots;
+        }
+
+        foreach ($slots as $slot) {
+            if (in_array($slot->startTime, $bookedTimes, true)) {
+                $slot->isAvailable = false;
+            }
+        }
+
+        return $slots;
+    }
+
+    /** @return SlotDTO[] */
     private function generateSlotsFromRule(string $date, array $rule): array
     {
         $slots = [];
@@ -51,17 +86,15 @@ class GenerateDoctorScheduleService implements GenerateDoctorScheduleServiceInte
         $duration = (int) $rule['slot_duration'];
 
         while ($current < $end) {
-            $startTimeStr = $current->format('H:i');
-
+            $startTime = $current->format('H:i');
             $current->modify("+{$duration} minutes");
 
-            // Fin de la jornada
             if ($current > $end) {
                 break;
             }
 
             $slots[] = new SlotDTO(
-                startTime: $startTimeStr,
+                startTime: $startTime,
                 endTime: $current->format('H:i'),
                 isAvailable: true,
                 type: SlotType::PRESENCIAL

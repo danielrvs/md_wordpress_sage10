@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Domain\Doctors\Repositories\CachedDoctorRepository;
 use App\Domain\Doctors\Contracts\DoctorRepositoryInterface;
 use App\Domain\Doctors\Repositories\WpQueryDoctorRepository;
+use App\Domain\Appointments\Contracts\AppointmentRepositoryInterface;
+use App\Domain\Appointments\Repositories\WpDbAppointmentRepository;
 use App\Domain\Schedules\Contracts\GenerateDoctorScheduleServiceInterface;
 use App\Domain\Schedules\Contracts\ScheduleRepositoryInterface;
 use App\Domain\Schedules\Repositories\WpDbScheduleRepository;
@@ -40,9 +42,14 @@ class ThemeServiceProvider extends SageServiceProvider
 
         $this->app->bind(ScheduleRepositoryInterface::class, WpDbScheduleRepository::class);
 
+        $this->app->bind(AppointmentRepositoryInterface::class, WpDbAppointmentRepository::class);
+
         $this->app->singleton(GenerateDoctorScheduleServiceInterface::class, function ($c) {
             return new CachedGenerateDoctorScheduleService(
-                new GenerateDoctorScheduleService($c->make(ScheduleRepositoryInterface::class))
+                new GenerateDoctorScheduleService(
+                    $c->make(ScheduleRepositoryInterface::class),
+                    $c->make(AppointmentRepositoryInterface::class)
+                )
             );
         });
     }
@@ -55,6 +62,9 @@ class ThemeServiceProvider extends SageServiceProvider
     public function boot()
     {
         parent::boot();
+        if (file_exists($appointmentSetup = dirname(__DIR__) . '/Domain/Appointments/setup.php')) {
+            require_once $appointmentSetup;
+        }
 
         if (file_exists($doctorSetup = dirname(__DIR__) . '/Domain/Doctors/setup.php')) {
             require_once $doctorSetup;
@@ -63,5 +73,7 @@ class ThemeServiceProvider extends SageServiceProvider
         if (file_exists($scheduleSetup = dirname(__DIR__) . '/Domain/Schedules/setup.php')) {
             require_once $scheduleSetup;
         }
+
+
     }
 }

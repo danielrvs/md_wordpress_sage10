@@ -17,6 +17,11 @@ class ScheduleDTO
     ) {
     }
 
+    public static function unavailable(int $doctorId, string $date): self
+    {
+        return new self(doctorId: $doctorId, date: $date, isWorkday: false, slots: []);
+    }
+
     public static function fromArray(array $data): self
     {
         $slots = array_map(
