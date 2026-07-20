@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Schedules\Services;
 
 use App\Domain\Schedules\Contracts\ScheduleRepositoryInterface;
-use Illuminate\Support\Facades\Cache;
-
+use App\Infrastructure\Cache\VersionedCache;
 final class UpdateDoctorScheduleService
 {
     public function __construct(
@@ -17,9 +16,6 @@ final class UpdateDoctorScheduleService
     public function execute(int $doctorId, array $rules): void
     {
         $this->scheduleRepository->syncWeeklyRules($doctorId, $rules);
-        
-        $versionKey = "doctor_schedules:v:{$doctorId}";
-        $version = (int) Cache::get($versionKey, 1);
-        Cache::put($versionKey, $version + 1, 86400 * 30);
+        VersionedCache::invalidate("doctor_schedules", (string) $doctorId);
     }
 }

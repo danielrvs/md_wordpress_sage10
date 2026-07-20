@@ -6,6 +6,7 @@ namespace App\Domain\Schedules\Services;
 
 use App\Domain\Schedules\Contracts\GenerateDoctorScheduleServiceInterface;
 use App\Domain\Schedules\DTOs\ScheduleDTO;
+use App\Infrastructure\Cache\VersionedCache;
 use Illuminate\Support\Facades\Cache;
 
 class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServiceInterface
@@ -20,11 +21,7 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
 
     public function execute(int $doctorId, string $date): ScheduleDTO
     {
-        $versionKey = "doctor_schedules:v:{$doctorId}";
-        $version = (int) Cache::get($versionKey, 1);
-        $cacheKey = sprintf('doctor_schedules:id_%d:v_%d:date_%s', $doctorId, $version, $date);
-
-        $cachedData = Cache::get($cacheKey);
+        $cachedData = VersionedCache::get("doctor_schedules", (string) $doctorId, "date_{$date}");
 
         if (is_array($cachedData)) {
             return ScheduleDTO::fromArray($cachedData);
@@ -32,7 +29,7 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
 
         $schedule = $this->innerService->execute($doctorId, $date);
 
-        Cache::put($cacheKey, $schedule->toArray(), self::TTL);
+        VersionedCache::put("doctor_schedules", (string) $doctorId, "date_{$date}", $schedule->toArray(), self::TTL);
 
         return $schedule;
     }

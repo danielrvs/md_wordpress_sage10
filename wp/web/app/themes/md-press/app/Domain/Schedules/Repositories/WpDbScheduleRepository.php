@@ -71,4 +71,39 @@ class WpDbScheduleRepository implements ScheduleRepositoryInterface
 
         $wpdb->query('COMMIT');
     }
+
+    public function getAbsences(int $doctorId): array
+    {
+        global $wpdb;
+        $query = $wpdb->prepare(
+            "SELECT * FROM {$this->tableAbsences} WHERE doctor_id = %d ORDER BY start_date ASC",
+            $doctorId
+        );
+        return $wpdb->get_results($query, ARRAY_A) ?: [];
+    }
+
+    public function getAbsenceById(int $absenceId): ?array
+    {
+        global $wpdb;
+        $query = $wpdb->prepare("SELECT * FROM {$this->tableAbsences} WHERE id = %d", $absenceId);
+        return $wpdb->get_row($query, ARRAY_A);
+    }
+
+    public function addAbsence(int $doctorId, string $startDate, string $endDate, ?string $reason): int
+    {
+        global $wpdb;
+        $wpdb->insert($this->tableAbsences, [
+            'doctor_id' => $doctorId,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'reason' => $reason,
+        ]);
+        return (int) $wpdb->insert_id;
+    }
+
+    public function deleteAbsence(int $absenceId): bool
+    {
+        global $wpdb;
+        return $wpdb->delete($this->tableAbsences, ['id' => $absenceId], ['%d']) !== false;
+    }
 }
