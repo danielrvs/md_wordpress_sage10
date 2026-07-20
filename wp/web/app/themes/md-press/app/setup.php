@@ -170,6 +170,17 @@ add_action('init', function () {
             'upload_files' => true,
         ]);
     }
+
+    // Auto-crear la página de precios si no existe
+    if (!get_page_by_path('pricing')) {
+        wp_insert_post([
+            'post_title'   => 'Pricing',
+            'post_name'    => 'pricing',
+            'post_type'    => 'page',
+            'post_status'  => 'publish',
+            'post_content' => '<!-- wp:paragraph --><p>Nuestros planes de precios.</p><!-- /wp:paragraph -->',
+        ]);
+    }
 });
 
 /**

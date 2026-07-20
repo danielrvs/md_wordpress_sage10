@@ -21,9 +21,9 @@
           class="hover:text-emerald-400 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-white/5 {{ is_page('doctors') ? 'text-emerald-400 bg-white/5' : '' }}">
           Directorio médico
         </a>
-        <a href="{{ home_url('/about') }}"
-          class="hover:text-emerald-400 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-white/5">
-          About
+        <a href="{{ home_url('/pricing') }}"
+          class="hover:text-emerald-400 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-white/5 {{ is_page('pricing') ? 'text-emerald-400 bg-white/5' : '' }}">
+          Pricing
         </a>
         <a href="{{ home_url('/blog') }}"
           class="hover:text-emerald-400 transition-colors py-1.5 px-2.5 rounded-lg hover:bg-white/5">

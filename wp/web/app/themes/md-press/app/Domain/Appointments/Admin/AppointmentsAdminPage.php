@@ -51,9 +51,7 @@ class AppointmentsAdminPage
         }
     }
 
-    /**
-     * Vista 1: Catálogo de médicos con contador de citas pendientes.
-     */
+
     private function renderDoctorsCatalogView(): void
     {
         $doctors = get_posts([
@@ -71,9 +69,7 @@ class AppointmentsAdminPage
         ])->render();
     }
 
-    /**
-     * Vista 2: Agenda detallada de un médico con filtros de fecha y ordenación.
-     */
+
     private function renderDoctorAgendaView(int $doctorId): void
     {
         $filterDate = isset($_GET['filter_date']) ? sanitize_text_field($_GET['filter_date']) : '';
