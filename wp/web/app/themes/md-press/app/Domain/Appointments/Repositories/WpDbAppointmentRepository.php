@@ -57,4 +57,29 @@ final class WpDbAppointmentRepository implements AppointmentRepositoryInterface
 
         return (int) $wpdb->insert_id;
     }
+
+    public function getAppointmentsByDoctor(int $doctorId, ?string $date = null, string $order = 'ASC'): array
+    {
+        global $wpdb;
+
+        $direction = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
+
+        if ($date) {
+            $start = $date . ' 00:00:00';
+            $end = $date . ' 23:59:59';
+            $query = $wpdb->prepare(
+                "SELECT * FROM {$this->table} WHERE doctor_id = %d AND appointment_date >= %s AND appointment_date <= %s ORDER BY appointment_date {$direction}",
+                $doctorId,
+                $start,
+                $end
+            );
+        } else {
+            $query = $wpdb->prepare(
+                "SELECT * FROM {$this->table} WHERE doctor_id = %d AND appointment_date >= NOW() AND status != 'cancelled' ORDER BY appointment_date {$direction}",
+                $doctorId
+            );
+        }
+
+        return $wpdb->get_results($query, OBJECT) ?: [];
+    }
 }

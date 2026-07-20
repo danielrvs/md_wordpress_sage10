@@ -12,8 +12,6 @@ interface AppointmentRepositoryInterface
      */
     public function getBookedStartTimes(int $doctorId, string $date): array;
 
-    /**
-     * Persiste una nueva cita en la base de datos.
-     */
     public function create(array $data): int;
+    public function getAppointmentsByDoctor(int $doctorId, ?string $date = null, string $order = 'ASC'): array;
 }

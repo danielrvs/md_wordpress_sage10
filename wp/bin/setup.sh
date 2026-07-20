@@ -127,6 +127,7 @@ fi
 
 log_info "Migrando tablas de schema..."
 wp schedule:migrate --allow-root
+wp appointment:migrate --allow-root
 log_success "✅ Tablas de schema migradas correctamente"
 
 log_success "🎉 Entorno aprovisionado y listo para desarrollo enterprise!"
