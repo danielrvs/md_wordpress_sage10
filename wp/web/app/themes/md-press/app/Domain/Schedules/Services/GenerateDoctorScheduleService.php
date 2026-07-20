@@ -22,6 +22,11 @@ class GenerateDoctorScheduleService implements GenerateDoctorScheduleServiceInte
 
     public function execute(int $doctorId, string $date): ScheduleDTO
     {
+        $today = (new DateTime('now', wp_timezone()))->format('Y-m-d');
+        if ($date < $today) {
+            return ScheduleDTO::unavailable($doctorId, $date);
+        }
+
         if ($this->isDoctorAbsent($doctorId, $date)) {
             return ScheduleDTO::unavailable($doctorId, $date);
         }
@@ -33,8 +38,23 @@ class GenerateDoctorScheduleService implements GenerateDoctorScheduleServiceInte
 
         $slots = $this->buildSlotsFromRules($date, $rules);
         $slots = $this->applyBookingAvailability($doctorId, $date, $slots);
+        $slots = $this->filterPastAndUpcomingSlots($date, $slots);
 
         return new ScheduleDTO($doctorId, $date, true, $slots);
+    }
+
+    private function filterPastAndUpcomingSlots(string $date, array $slots): array
+    {
+        $timezone = wp_timezone();
+        $cutoff = new DateTime('now', $timezone);
+        $cutoff->modify('+30 minutes');
+
+        $filtered = array_filter($slots, function (SlotDTO $slot) use ($date, $timezone, $cutoff) {
+            $slotDateTime = new DateTime($date . ' ' . $slot->startTime, $timezone);
+            return $slotDateTime >= $cutoff;
+        });
+
+        return array_values($filtered);
     }
 
     private function isDoctorAbsent(int $doctorId, string $date): bool

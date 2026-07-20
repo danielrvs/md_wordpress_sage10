@@ -21,6 +21,11 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
 
     public function execute(int $doctorId, string $date): ScheduleDTO
     {
+        $today = (new \DateTime('now', wp_timezone()))->format('Y-m-d');
+        if ($date <= $today) {
+            return $this->innerService->execute($doctorId, $date);
+        }
+
         $cachedData = VersionedCache::get("doctor_schedules", (string) $doctorId, "date_{$date}");
 
         if (is_array($cachedData)) {
