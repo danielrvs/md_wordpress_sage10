@@ -136,6 +136,7 @@ if [ "$WITH_DATA" = true ]; then
     log_info "Generando datos demo para el directorio médico..."
     wp doctor:seed --count=25 --allow-root
     wp schedule:seed --allow-root
+    wp appointment:seed --count=50 --allow-root
     log_success "✅ Datos demo generados correctamente"
 else
     log_info "Saltando la generación de datos demo (ejecuta con --with-data si deseas incluirlos)."
