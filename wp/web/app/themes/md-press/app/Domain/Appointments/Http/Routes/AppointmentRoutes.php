@@ -20,11 +20,20 @@ class AppointmentRoutes
     {
         $controller = app(AppointmentController::class);
 
-        // Crear una nueva cita médica
+        // Crear una nueva cita médica (requiere autenticación)
         register_rest_route('api/v1', '/appointments', [
             'methods' => 'POST',
             'callback' => [$controller, 'create'],
-            'permission_callback' => '__return_true',
+            'permission_callback' => function (): bool|\WP_Error {
+                if (!is_user_logged_in()) {
+                    return new \WP_Error(
+                        'rest_forbidden',
+                        'Debes iniciar sesión como usuario registrado para poder reservar una cita médica.',
+                        ['status' => 401]
+                    );
+                }
+                return true;
+            },
             'args' => [
                 'doctor_id' => [
                     'required' => true,

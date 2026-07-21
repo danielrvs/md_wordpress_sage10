@@ -6,7 +6,7 @@ return [
     'nav.doctors' => 'Directorio médico',
     'nav.pricing' => 'Planes',
     'nav.blog' => 'Blog',
-    'nav.login' => 'Acceso Profesional',
+    'nav.login' => 'Iniciar sesión',
     'nav.admin' => 'Panel Admin',
     'nav.logout' => 'Salir',
 
@@ -65,7 +65,7 @@ return [
     'doctor.no_desc' => 'No se ha añadido descripción profesional para este médico todavía.',
 
     // Auth / Login
-    'login.title' => 'Acceso Profesional',
+    'login.title' => 'Iniciar sesión',
     'login.username' => 'Usuario o Email',
     'login.password' => 'Contraseña',
     'login.remember' => 'Recordarme',

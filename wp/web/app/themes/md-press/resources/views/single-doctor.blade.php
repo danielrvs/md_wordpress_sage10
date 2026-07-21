@@ -97,24 +97,7 @@
                   <div class="font-medium text-white">{!! $location !!}</div>
                 </div>
               </div>
-
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 shrink-0">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <div>
-                  <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500">{{ __t('doctor.availability') }}</div>
-                  <div class="font-medium text-white">{!! __t('avail.' . strip_tags((string) $availability)) !!}</div>
-                </div>
-              </div>
             </div>
-
-            <!-- Primary Action -->
-            <x-button variant="primary" class="w-full py-2.5 px-4 mt-6">
-              {{ __t('doctor.request_appointment') }}
-            </x-button>
           </div>
 
           <!-- Right Column (Details / Biography & Custom schedules) -->

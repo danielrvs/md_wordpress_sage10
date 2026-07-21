@@ -30,12 +30,14 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
   const [bookingSuccess, setBookingSuccess] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isUnauthorized, setIsUnauthorized] = useState<boolean>(false);
 
   const fetchSchedule = async (targetDate: string) => {
     setLoading(true);
     setSelectedSlot(null);
     setBookingSuccess(false);
     setErrorMessage(null);
+    setIsUnauthorized(false);
 
     try {
       const locale = getLocale();
@@ -95,6 +97,9 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
           fetchSchedule(date);
         }, 1500);
       } else {
+        if (response.status === 401) {
+          setIsUnauthorized(true);
+        }
         const errorText = data.message || __('booking.error', 'No se pudo completar la reserva.');
         setErrorMessage(errorText);
       }
@@ -234,11 +239,21 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
 
                     {/* Error Message Alert */}
                     {errorMessage && (
-                      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold flex items-center gap-2">
-                        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <span>{errorMessage}</span>
+                      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold space-y-3">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                          <span>{errorMessage}</span>
+                        </div>
+                        {isUnauthorized && (
+                          <a
+                            href="/auth/login"
+                            className="inline-flex items-center justify-center w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-colors shadow-md"
+                          >
+                            {__('nav.login', 'Iniciar Sesión')}
+                          </a>
+                        )}
                       </div>
                     )}
 

@@ -6,7 +6,7 @@ return [
     'nav.doctors' => 'Medical Directory',
     'nav.pricing' => 'Pricing',
     'nav.blog' => 'Blog',
-    'nav.login' => 'Professional Access',
+    'nav.login' => 'Access',
     'nav.admin' => 'Admin Panel',
     'nav.logout' => 'Logout',
 
@@ -65,7 +65,7 @@ return [
     'doctor.no_desc' => 'No professional description added for this doctor yet.',
 
     // Auth / Login
-    'login.title' => 'Professional Access',
+    'login.title' => 'Access',
     'login.username' => 'Username or Email',
     'login.password' => 'Password',
     'login.remember' => 'Remember Me',

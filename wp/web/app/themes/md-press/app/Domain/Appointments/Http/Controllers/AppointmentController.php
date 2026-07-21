@@ -21,13 +21,15 @@ class AppointmentController
     ) {
     }
 
-    /**
-     * Crear una nueva cita médica.
-     * POST /wp-json/api/v1/appointments
-     */
     public function create(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        $params = $request->get_json_params() ?: $request->get_params();
+        $params = $request->get_json_params() ?: $request->get_params() ?: [];
+
+        // Asignar patient_id dinámicamente desde el usuario autenticado en WordPress
+        $currentUserId = get_current_user_id();
+        if (empty($params['patient_id']) || !current_user_can('manage_options')) {
+            $params['patient_id'] = $currentUserId;
+        }
 
         // Validar presencia de parámetros requeridos
         $doctorId = (int) ($params['doctor_id'] ?? $params['doctorId'] ?? 0);
