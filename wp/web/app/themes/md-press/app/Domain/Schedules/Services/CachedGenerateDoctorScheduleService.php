@@ -26,7 +26,8 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
             return $this->innerService->execute($doctorId, $date);
         }
 
-        $cachedData = VersionedCache::get("doctor_schedules", (string) $doctorId, "date_{$date}");
+        $lang = function_exists('__locale') ? __locale() : 'es';
+        $cachedData = VersionedCache::get("doctor_schedules", (string) $doctorId, "lang_{$lang}_date_{$date}");
 
         if (is_array($cachedData)) {
             return ScheduleDTO::fromArray($cachedData);
@@ -34,7 +35,7 @@ class CachedGenerateDoctorScheduleService implements GenerateDoctorScheduleServi
 
         $schedule = $this->innerService->execute($doctorId, $date);
 
-        VersionedCache::put("doctor_schedules", (string) $doctorId, "date_{$date}", $schedule->toArray(), self::TTL);
+        VersionedCache::put("doctor_schedules", (string) $doctorId, "lang_{$lang}_date_{$date}", $schedule->toArray(), self::TTL);
 
         return $schedule;
     }

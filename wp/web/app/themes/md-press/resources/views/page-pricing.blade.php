@@ -9,75 +9,75 @@
     <div class="max-w-6xl mx-auto px-6 py-20 relative z-10">
       <!-- Header -->
       <div class="text-center max-w-3xl mx-auto mb-16">
-        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full">Planes y Tarifas</span>
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full">{{ __t('pricing.tag') }}</span>
         <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-emerald-400 mt-4 leading-tight">
-          Planes diseñados para tu <span class="text-emerald-400">crecimiento profesional</span>
+          {{ __t('pricing.title_pre') }} <span class="text-emerald-400">{{ __t('pricing.title_highlight') }}</span>
         </h1>
         <p class="mt-4 text-base text-slate-400 leading-relaxed">
-          Digitaliza tu consulta médica hoy mismo. Elige el plan que mejor se adapte a tus necesidades y empieza a gestionar tus citas de forma eficiente.
+          {{ __t('pricing.subtitle') }}
         </p>
       </div>
 
       <!-- Pricing Cards Grid -->
       <div class="grid md:grid-cols-3 gap-8 items-stretch max-w-5xl mx-auto">
         <x-pricing-card 
-          title="Básico"
+          :title="__t('pricing.basic')"
           price="0€"
-          description="Presencia esencial en internet."
-          ctaText="Comenzar Gratis"
+          :description="__t('pricing.basic_desc')"
+          :ctaText="__t('pricing.btn_free')"
           ctaHref="{{ wp_login_url() }}"
           ctaVariant="secondary"
           :features="[
-            'Perfil en el Directorio Médico',
-            'Especialidad y Ubicación',
-            '-Gestión de Ausencias y Vacaciones',
-            '-Reserva de Citas en Tiempo Real'
+            __t('pricing.feat_profile'),
+            __t('pricing.feat_spec_loc'),
+            __t('pricing.feat_no_absences'),
+            __t('pricing.feat_no_realtime')
           ]"
         />
 
         <x-pricing-card 
-          title="Profesional"
+          :title="__t('pricing.pro')"
           price="29€"
           popular="true"
-          description="Agenda interactiva y gestión avanzada."
-          ctaText="Suscribirme Ahora"
+          :description="__t('pricing.pro_desc')"
+          :ctaText="__t('pricing.btn_pro')"
           ctaHref="{{ wp_login_url() }}"
           ctaVariant="primary"
           :features="[
-            'Todo lo del plan Básico',
-            '<strong>Gestión de Horarios y Ausencias</strong>',
-            'Citas Web en Tiempo Real',
-            'Soporte Prioritario'
+            __t('pricing.feat_all_basic'),
+            __t('pricing.feat_schedules'),
+            __t('pricing.feat_realtime'),
+            __t('pricing.feat_priority_support')
           ]"
         />
 
         <x-pricing-card 
-          title="Clínicas"
+          :title="__t('pricing.clinics')"
           price="99€"
-          description="Solución para centros de salud y múltiples médicos."
-          ctaText="Contactar Ventas"
+          :description="__t('pricing.clinics_desc')"
+          :ctaText="__t('pricing.btn_contact')"
           ctaHref="mailto:ventas@enterprisemedical.com"
           ctaVariant="secondary"
           :features="[
-            'Múltiples Médicos Vinculados (hasta 15)',
-            'Panel de Administración Centralizado',
-            'Integración con APIs Externas / EHR',
-            'SLA del 99.9%'
+            __t('pricing.feat_multi_doctors'),
+            __t('pricing.feat_central_admin'),
+            __t('pricing.feat_api_integration'),
+            __t('pricing.feat_sla')
           ]"
         />
       </div>
 
       <!-- FAQ Section (Extra visual polish) -->
       <div class="mt-24 max-w-4xl mx-auto border-t border-white/10 pt-16">
-        <h3 class="text-2xl font-bold text-center text-white mb-10">Preguntas Frecuentes</h3>
+        <h3 class="text-2xl font-bold text-center text-white mb-10">{{ __t('pricing.faq_title') }}</h3>
         <div class="grid md:grid-cols-2 gap-8 text-sm">
           <div>
-            <h4 class="font-semibold text-white mb-2">¿Puedo cambiar de plan en cualquier momento?</h4>
-            <p class="text-slate-400">Sí, puedes subir o bajar de nivel tu plan cuando quieras. Los cambios se aplicarán de inmediato en tu ciclo de facturación.</p>
+            <h4 class="font-semibold text-white mb-2">{{ __t('pricing.faq_q1') }}</h4>
+            <p class="text-slate-400">{{ __t('pricing.faq_a1') }}</p>
           </div>
           <div>
-            <h4 class="font-semibold text-white mb-2">¿Cómo funciona la reserva de citas en tiempo real?</h4>
-            <p class="text-slate-400">El sistema genera automáticamente tramos horarios libres y ocupados en base a tu configuración. Los pacientes reservan y el sistema actualiza tu disponibilidad sin solapamientos.</p>
+            <h4 class="font-semibold text-white mb-2">{{ __t('pricing.faq_q2') }}</h4>
+            <p class="text-slate-400">{{ __t('pricing.faq_a2') }}</p>
           </div>
         </div>
       </div>

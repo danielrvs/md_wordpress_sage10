@@ -105,15 +105,15 @@
                   </svg>
                 </div>
                 <div>
-                  <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Disponibilidad</div>
-                  <div class="font-medium text-white">{!! $availability !!}</div>
+                  <div class="text-[10px] uppercase font-bold tracking-wider text-slate-500">{{ __t('doctor.availability') }}</div>
+                  <div class="font-medium text-white">{!! __t('avail.' . strip_tags((string) $availability)) !!}</div>
                 </div>
               </div>
             </div>
 
             <!-- Primary Action -->
             <x-button variant="primary" class="w-full py-2.5 px-4 mt-6">
-              Solicitar Cita
+              {{ __t('doctor.request_appointment') }}
             </x-button>
           </div>
 
@@ -126,13 +126,13 @@
                 <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-                Perfil Profesional
+                {{ __t('doctor.profile') }}
               </h2>
               <div class="e-content block-editor-content">
                 @if (get_the_content())
                   @php(the_content())
                 @else
-                  <p class="text-slate-400 italic">No se ha añadido descripción profesional para este médico todavía.</p>
+                  <p class="text-slate-400 italic">{{ __t('doctor.no_desc') }}</p>
                 @endif
               </div>
             </div>

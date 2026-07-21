@@ -132,6 +132,9 @@ log_success "✅ Tablas de schema migradas correctamente"
 
 log_success "🎉 Entorno aprovisionado y listo para desarrollo enterprise!"
 
+log_info "Creando páginas estáticas esenciales (Pricing, Directorio)..."
+wp page:seed --allow-root
+
 if [ "$WITH_DATA" = true ]; then
     log_info "Generando datos demo para el directorio médico..."
     wp doctor:seed --count=25 --allow-root

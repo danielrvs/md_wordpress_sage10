@@ -74,6 +74,10 @@ class ThemeServiceProvider extends SageServiceProvider
             require_once $doctorSetup;
         }
 
+        if (file_exists($pagesSetup = dirname(__DIR__) . '/Domain/Pages/setup.php')) {
+            require_once $pagesSetup;
+        }
+
         if (file_exists($scheduleSetup = dirname(__DIR__) . '/Domain/Schedules/setup.php')) {
             require_once $scheduleSetup;
         }

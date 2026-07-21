@@ -4,9 +4,22 @@
  * Theme setup.
  */
 
-namespace App;
-
 use Illuminate\Support\Facades\Vite;
+
+// Boot LanguageManager
+\App\Services\LanguageManager::boot();
+
+if (!function_exists('__t')) {
+    function __t(string $key, array $replace = []): string {
+        return \App\Services\LanguageManager::translate($key, $replace);
+    }
+}
+
+if (!function_exists('__locale')) {
+    function __locale(): string {
+        return \App\Services\LanguageManager::getLocale();
+    }
+}
 
 /**
  * Inject styles into the block editor.

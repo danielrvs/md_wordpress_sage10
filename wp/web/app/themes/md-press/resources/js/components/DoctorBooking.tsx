@@ -1,5 +1,6 @@
 import { useState, useEffect } from '@wordpress/element';
 import { Button } from './Button';
+import { __, getLocale } from '../utils/i18n';
 
 interface Slot {
   start_time: string;
@@ -34,7 +35,8 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
     setBookingSuccess(false);
 
     try {
-      const response = await fetch(`/wp-json/api/v1/doctors/${doctorId}/schedule?date=${targetDate}`);
+      const locale = getLocale();
+      const response = await fetch(`/wp-json/api/v1/doctors/${doctorId}/schedule?date=${targetDate}&lang=${locale}`);
       if (response.ok) {
         const data: Schedule = await response.json();
         setSchedule(data);
@@ -65,12 +67,12 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
     setBookingSuccess(true);
   };
 
-  // Formato legible de fecha
   const formatFriendlyDate = (dateStr: string) => {
     try {
       const options: Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       const dateObj = new Date(dateStr + 'T00:00:00');
-      return dateObj.toLocaleDateString('es-ES', options);
+      const localeCode = getLocale() === 'en' ? 'en-US' : 'es-ES';
+      return dateObj.toLocaleDateString(localeCode, options);
     } catch (e) {
       return dateStr;
     }
@@ -81,7 +83,9 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
       {/* Date Picker Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
         <div>
-          <h3 className="text-base font-bold text-white uppercase tracking-wider text-slate-400">Seleccionar Fecha</h3>
+          <h3 className="text-base font-bold text-white uppercase tracking-wider text-slate-400">
+            {__('booking.select_date', 'Seleccionar Fecha')}
+          </h3>
           <p className="text-sm text-emerald-400 mt-1 capitalize font-medium">
             {formatFriendlyDate(date)}
           </p>
@@ -105,7 +109,7 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <p className="text-xs font-semibold">Cargando horarios disponibles...</p>
+          <p className="text-xs font-semibold">{__('booking.loading', 'Cargando horarios disponibles...')}</p>
         </div>
       )}
 
@@ -117,6 +121,10 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {schedule.slots.map((slot, index) => {
                   const isSelected = selectedSlot?.start_time === slot.start_time;
+                  const typeLabel = slot.type === 'telemedicina' 
+                    ? __('booking.telemedicina', 'Telemedicina') 
+                    : __('booking.presencial', 'Presencial');
+
                   return (
                     <button
                       key={index}
@@ -138,7 +146,7 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
                           ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-500/20'
                           : 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
                       }`}>
-                        {slot.type}
+                        {typeLabel}
                       </span>
                     </button>
                   );
@@ -149,9 +157,9 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
               {selectedSlot && (
                 <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl animate-fade-in flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <h4 className="text-sm font-bold text-white">Reserva de Turno</h4>
+                    <h4 className="text-sm font-bold text-white">{__('booking.title', 'Reserva de Turno')}</h4>
                     <p className="text-xs text-slate-400 mt-1">
-                      Has seleccionado una cita <span className="font-semibold text-emerald-400 uppercase text-[10px]">{selectedSlot.type}</span> para el <span className="text-white font-medium">{formatFriendlyDate(date)}</span> a las <span className="text-white font-semibold">{selectedSlot.start_time} hs</span>.
+                      {formatFriendlyDate(date)} - <span className="text-white font-semibold">{selectedSlot.start_time} hs</span>.
                     </p>
                   </div>
 
@@ -160,7 +168,7 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
                       <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
-                      ¡Cita Reservada con Éxito!
+                      {__('booking.success', '¡Cita Reservada con Éxito!')}
                     </div>
                   ) : (
                     <Button
@@ -168,7 +176,7 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
                       variant="primary"
                       className="py-2.5 px-5 text-xs shrink-0"
                     >
-                      Confirmar Reserva
+                      {__('booking.confirm', 'Confirmar Reserva')}
                     </Button>
                   )}
                 </div>
@@ -180,10 +188,7 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div>
-                <h4 className="text-sm font-bold text-white">Sin consultas disponibles</h4>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Este especialista no tiene horarios programados o se encuentra ausente (vacaciones, congresos) para la fecha seleccionada. Por favor, selecciona otro día en el calendario.
-                </p>
+                <h4 className="text-sm font-bold text-white">{__('booking.no_slots', 'Sin consultas disponibles')}</h4>
               </div>
             </div>
           )}

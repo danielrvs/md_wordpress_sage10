@@ -1,11 +1,12 @@
 import React from 'react';
 import { useState, useEffect } from '@wordpress/element';
 import { Button } from './Button';
+import { __ } from '../utils/i18n';
 
 interface Doctor {
   id: number;
   name: string;
-  specialty: string[]; // Tipado como array de strings
+  specialty: string[];
   location: string;
   availability: string;
   rating: number;
@@ -102,6 +103,9 @@ export function MedicalSearchDirectory() {
     }
   };
 
+  const translateSpec = (name: string) => __(`spec.${name}`, name);
+  const translateAvail = (name: string) => __(`avail.${name}`, name);
+
   if (isHomepage) {
     return (
       <div className="space-y-4">
@@ -109,29 +113,27 @@ export function MedicalSearchDirectory() {
           <svg className="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          Directorio de Especialistas
+          {__('nav.doctors', 'Directorio de Especialistas')}
         </h2>
         <form onSubmit={handleSearchSubmit} className="space-y-3">
           <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Nombre o Palabra Clave</label>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ej. Dr. Alejandro Ruiz, Pediatría..."
+              placeholder={__('search.placeholder', 'Ej. Dr. Alejandro Ruiz, Pediatría...')}
               className="w-full bg-slate-900/80 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Especialidad</label>
             <select
               value={specialty}
               onChange={(e) => handleSpecialtyChange(e.target.value)}
               className="w-full bg-slate-900/80 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm cursor-pointer"
             >
-              <option value="">Todas las especialidades</option>
+              <option value="">{__('search.all_specialties', 'Todas las especialidades')}</option>
               {specialties.map((spec) => (
-                <option key={spec} value={spec}>{spec}</option>
+                <option key={spec} value={spec}>{translateSpec(spec)}</option>
               ))}
             </select>
           </div>
@@ -141,7 +143,7 @@ export function MedicalSearchDirectory() {
               variant="primary"
               className="w-full py-2.5 px-4 text-white"
             >
-              Buscar
+              {__('search.btn_search', 'Buscar')}
             </Button>
             <Button
               type="button"
@@ -149,7 +151,7 @@ export function MedicalSearchDirectory() {
               onClick={handleClearFilters}
               className="w-full py-2.5 px-4"
             >
-              Limpiar
+              {__('search.btn_clear', 'Limpiar')}
             </Button>
           </div>
         </form>
@@ -165,13 +167,12 @@ export function MedicalSearchDirectory() {
         <div className="relative grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
 
           <div className="md:col-span-5">
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Nombre o palabra clave</label>
             <div className="relative">
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ej. Dr. Alejandro Ruiz, Pediatra..."
+                placeholder={__('search.placeholder', 'Ej. Dr. Alejandro Ruiz, Pediatra...')}
                 className="w-full bg-slate-900/80 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all"
               />
               <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
@@ -183,15 +184,14 @@ export function MedicalSearchDirectory() {
           </div>
 
           <div className="md:col-span-3">
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Especialidad</label>
             <select
               value={specialty}
               onChange={(e) => handleSpecialtyChange(e.target.value)}
               className="w-full bg-slate-900/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer"
             >
-              <option value="">Todas las especialidades</option>
+              <option value="">{__('search.all_specialties', 'Todas las especialidades')}</option>
               {specialties.map((spec) => (
-                <option key={spec} value={spec}>{spec}</option>
+                <option key={spec} value={spec}>{translateSpec(spec)}</option>
               ))}
             </select>
           </div>
@@ -202,7 +202,7 @@ export function MedicalSearchDirectory() {
               variant="primary"
               className="w-full py-2.5 px-4"
             >
-              Buscar
+              {__('search.btn_search', 'Buscar')}
             </Button>
           </div>
 
@@ -213,7 +213,7 @@ export function MedicalSearchDirectory() {
               onClick={handleClearFilters}
               className="w-full py-2.5 px-4"
             >
-              Limpiar
+              {__('search.btn_clear', 'Limpiar')}
             </Button>
           </div>
 
@@ -227,14 +227,14 @@ export function MedicalSearchDirectory() {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <p className="text-sm font-semibold tracking-wide">Cargando especialistas...</p>
+          <p className="text-sm font-semibold tracking-wide">{__('search.loading', 'Cargando especialistas...')}</p>
         </div>
       ) : doctors.length === 0 ? (
         <div className="p-12 text-center rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
           <svg className="w-12 h-12 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 16.318A4.486 4.486 0 0012.016 15a4.486 4.486 0 00-3.198 1.318M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
           </svg>
-          <p className="text-slate-400 font-medium">No se encontraron especialistas que coincidan con los filtros.</p>
+          <p className="text-slate-400 font-medium">{__('search.no_results', 'No se encontraron médicos publicados con los filtros seleccionados.')}</p>
         </div>
       ) : (
         <div className="space-y-8">
@@ -249,6 +249,10 @@ export function MedicalSearchDirectory() {
               } else if (doctor.availability === 'Esta semana') {
                 availabilityClass = "bg-teal-500/10 text-teal-400 border-teal-500/20";
               }
+
+              const formattedSpecialty = Array.isArray(doctor.specialty) 
+                ? doctor.specialty.map(s => translateSpec(s)).join(', ') 
+                : translateSpec(doctor.specialty);
 
               return (
                 <div key={doctor.id} className="flex flex-col justify-between rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-emerald-500/30 transition-all duration-300 group hover:-translate-y-1 shadow-lg shadow-black/10">
@@ -266,7 +270,7 @@ export function MedicalSearchDirectory() {
                       </div>
                       <div className="space-y-1.5 min-w-0">
                         <span className="inline-block text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider truncate max-w-full">
-                          {Array.isArray(doctor.specialty) ? doctor.specialty.join(', ') : doctor.specialty}
+                          {formattedSpecialty}
                         </span>
                         <h3 className="text-base font-extrabold text-white leading-tight group-hover:text-emerald-300 transition-colors truncate">
                           <a href={doctor.permalink}>{doctor.name}</a>
@@ -288,7 +292,7 @@ export function MedicalSearchDirectory() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         <span className={`inline-block text-[9px] font-bold border px-2 py-0.5 rounded ${availabilityClass}`}>
-                          {doctor.availability}
+                          {translateAvail(doctor.availability)}
                         </span>
                       </div>
 
@@ -317,7 +321,7 @@ export function MedicalSearchDirectory() {
                       variant="secondary"
                       className="w-full py-2.5 text-sm"
                     >
-                      Ver Perfil Completo
+                      {__('search.view_profile', 'Ver Perfil Completo')}
                     </Button>
                   </div>
 
@@ -336,9 +340,11 @@ export function MedicalSearchDirectory() {
                 disabled={page === 1}
                 className="px-4 py-2 text-xs disabled:opacity-30 disabled:pointer-events-none"
               >
-                &larr; Anterior
+                &larr; {__('search.prev', 'Anterior')}
               </Button>
-              <span className="flex items-center text-xs text-slate-400 font-bold">Página {page} de {totalPages}</span>
+              <span className="flex items-center text-xs text-slate-400 font-bold">
+                {__('search.page', 'Página')} {page} {__('search.of', 'de')} {totalPages}
+              </span>
               <Button
                 type="button"
                 variant="glass"
@@ -346,7 +352,7 @@ export function MedicalSearchDirectory() {
                 disabled={page === totalPages}
                 className="px-4 py-2 text-xs disabled:opacity-30 disabled:pointer-events-none"
               >
-                Siguiente &rarr;
+                {__('search.next', 'Siguiente')} &rarr;
               </Button>
             </div>
           )}

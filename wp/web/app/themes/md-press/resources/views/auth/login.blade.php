@@ -30,7 +30,7 @@
       <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl blur opacity-10 group-hover:opacity-15 transition duration-300"></div>
 
       <div class="relative">
-        <h3 class="text-xl font-bold text-center mb-6">Acceso Profesional</h3>
+        <h3 class="text-xl font-bold text-center mb-6">{{ __t('login.title') }}</h3>
 
         @if($error)
           <div class="mb-5 p-4 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold leading-relaxed">
@@ -42,7 +42,7 @@
           {!! wp_nonce_field('custom_login_action', 'custom_login_nonce', true, false) !!}
 
           <div>
-            <label for="username" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Usuario o Email</label>
+            <label for="username" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __t('login.username') }}</label>
             <input 
               type="text" 
               name="log" 
@@ -56,7 +56,7 @@
 
           <div>
             <div class="flex items-center justify-between mb-2">
-              <label for="password" class="block text-xs font-bold text-slate-400 uppercase tracking-wider">Contraseña</label>
+              <label for="password" class="block text-xs font-bold text-slate-400 uppercase tracking-wider">{{ __t('login.password') }}</label>
             </div>
             <input 
               type="password" 
@@ -71,13 +71,13 @@
           <div class="flex items-center justify-between pt-1">
             <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
               <input type="checkbox" name="rememberme" id="rememberme" class="rounded border-white/10 bg-slate-900/60 text-emerald-500 focus:ring-emerald-500/20 w-4 h-4">
-              Recordarme
+              {{ __t('login.remember') }}
             </label>
           </div>
 
           <div class="pt-2">
             <x-button type="submit" class="w-full py-3">
-              Iniciar Sesión
+              {{ __t('login.submit') }}
             </x-button>
           </div>
         </form>
@@ -87,7 +87,7 @@
     <!-- Back to home link -->
     <p class="text-center text-xs text-slate-500 mt-6">
       <a href="{{ home_url('/') }}" class="hover:text-emerald-400 transition-colors">
-        &larr; Volver al sitio principal
+        &larr; {{ __t('login.back') }}
       </a>
     </p>
   </div>

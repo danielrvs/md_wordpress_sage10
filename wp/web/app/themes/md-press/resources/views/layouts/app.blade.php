@@ -15,6 +15,13 @@
     @php(do_action('get_header'))
     @php(wp_head())
 
+    <script>
+      window.AppTranslations = {
+        locale: @json(__locale()),
+        strings: @json(\App\Services\LanguageManager::getTranslations())
+      };
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
 
