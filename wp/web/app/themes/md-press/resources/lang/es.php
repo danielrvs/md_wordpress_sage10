@@ -146,6 +146,15 @@ return [
     'avail.Esta semana' => 'Esta semana',
     'avail.Bajo consulta' => 'Bajo consulta',
 
+    'booking.error' => 'No se pudo completar la reserva.',
+    'booking.error_network' => 'Error de conexión al procesar la reserva.',
+    'booking.modal_tag' => 'Confirmación de Reserva',
+    'booking.modal_title' => 'Reserva de Cita Médica',
+    'booking.date_label' => 'Fecha:',
+    'booking.time_label' => 'Horario:',
+    'booking.type_label' => 'Modalidad:',
+    'booking.btn_cancel' => 'Cancelar',
+
     // Footer
     'footer.rights' => 'Todos los derechos reservados.',
 ];

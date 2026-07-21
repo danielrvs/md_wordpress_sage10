@@ -38,6 +38,7 @@ class GenerateDoctorScheduleService implements GenerateDoctorScheduleServiceInte
 
         $slots = $this->buildSlotsFromRules($date, $rules);
         $slots = $this->applyBookingAvailability($doctorId, $date, $slots);
+        $slots = array_values(array_filter($slots, fn (SlotDTO $slot) => $slot->isAvailable));
         $slots = $this->filterPastAndUpcomingSlots($date, $slots);
 
         return new ScheduleDTO($doctorId, $date, true, $slots);

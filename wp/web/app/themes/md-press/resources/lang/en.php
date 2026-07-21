@@ -146,6 +146,15 @@ return [
     'avail.Esta semana' => 'This week',
     'avail.Bajo consulta' => 'Upon request',
 
+    'booking.error' => 'Failed to complete the booking.',
+    'booking.error_network' => 'Connection error while processing booking.',
+    'booking.modal_tag' => 'Booking Confirmation',
+    'booking.modal_title' => 'Medical Appointment Booking',
+    'booking.date_label' => 'Date:',
+    'booking.time_label' => 'Schedule:',
+    'booking.type_label' => 'Consultation Type:',
+    'booking.btn_cancel' => 'Cancel',
+
     // Footer
     'footer.rights' => 'All rights reserved.',
 ];
