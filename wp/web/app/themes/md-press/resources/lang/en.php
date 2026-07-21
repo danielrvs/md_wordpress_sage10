@@ -6,7 +6,8 @@ return [
     'nav.doctors' => 'Medical Directory',
     'nav.pricing' => 'Pricing',
     'nav.blog' => 'Blog',
-    'nav.login' => 'Access',
+    'nav.login' => 'Log in',
+    'nav.register' => 'Register',
     'nav.admin' => 'Admin Panel',
     'nav.logout' => 'Logout',
 
@@ -64,13 +65,22 @@ return [
     'doctor.availability' => 'Availability',
     'doctor.no_desc' => 'No professional description added for this doctor yet.',
 
-    // Auth / Login
-    'login.title' => 'Access',
+    // Auth / Login & Register
+    'login.title' => 'Log In',
     'login.username' => 'Username or Email',
     'login.password' => 'Password',
     'login.remember' => 'Remember Me',
     'login.submit' => 'Log In',
     'login.back' => 'Back to main site',
+    'login.no_account' => "Don't have an account? Register for free",
+
+    'register.title' => 'Create Patient Account',
+    'register.name' => 'Full Name',
+    'register.email' => 'Email Address',
+    'register.password' => 'Password',
+    'register.password_confirm' => 'Confirm Password',
+    'register.submit' => 'Create Account',
+    'register.has_account' => 'Already have an account? Log in',
 
     // Extra Stats
     'stats.specialties' => 'Specialties',

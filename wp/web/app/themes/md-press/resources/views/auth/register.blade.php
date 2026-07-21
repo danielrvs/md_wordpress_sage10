@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Acceso Profesional - Directorio Médico</title>
+  <title>{{ __t('register.title') }} - Directorio Médico</title>
   @php(wp_head())
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="h-full font-sans text-white antialiased overflow-hidden relative flex items-center justify-center">
+<body class="h-full font-sans text-white antialiased overflow-y-auto relative flex items-center justify-center py-12">
 
   <!-- Decorative background blobs -->
   <div class="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full filter blur-3xl animate-pulse"></div>
@@ -24,13 +24,13 @@
       <h2 class="text-sm font-semibold tracking-widest text-emerald-400 uppercase">Directorio Médico</h2>
     </div>
 
-    <!-- Login Card -->
+    <!-- Register Card -->
     <div class="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl relative group">
       <!-- Glow effect on hover -->
       <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-3xl blur opacity-10 group-hover:opacity-15 transition duration-300"></div>
 
       <div class="relative">
-        <h3 class="text-xl font-bold text-center mb-6">{{ __t('login.title') }}</h3>
+        <h3 class="text-xl font-bold text-center mb-6">{{ __t('register.title') }}</h3>
 
         @if($error)
           <div class="mb-5 p-4 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold leading-relaxed">
@@ -38,29 +38,40 @@
           </div>
         @endif
 
-        <form method="POST" action="{{ $actionUrl }}" class="space-y-5">
-          {!! wp_nonce_field('custom_login_action', 'custom_login_nonce', true, false) !!}
+        <form method="POST" action="{{ $actionUrl }}" class="space-y-4">
+          {!! wp_nonce_field('custom_register_action', 'custom_register_nonce', true, false) !!}
 
           <div>
-            <label for="username" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __t('login.username') }}</label>
+            <label for="name" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __t('register.name') }}</label>
             <input 
               type="text" 
-              name="log" 
-              id="username" 
-              value="{{ $username }}"
+              name="name" 
+              id="name" 
+              value="{{ $name }}"
               required 
-              placeholder="ej. dr_alejandro"
+              placeholder="ej. María García"
               class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm"
             />
           </div>
 
           <div>
-            <div class="flex items-center justify-between mb-2">
-              <label for="password" class="block text-xs font-bold text-slate-400 uppercase tracking-wider">{{ __t('login.password') }}</label>
-            </div>
+            <label for="email" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __t('register.email') }}</label>
+            <input 
+              type="email" 
+              name="email" 
+              id="email" 
+              value="{{ $email }}"
+              required 
+              placeholder="maria@ejemplo.com"
+              class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm"
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __t('register.password') }}</label>
             <input 
               type="password" 
-              name="pwd" 
+              name="password" 
               id="password" 
               required 
               placeholder="••••••••"
@@ -68,23 +79,28 @@
             />
           </div>
 
-          <div class="flex items-center justify-between pt-1">
-            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
-              <input type="checkbox" name="rememberme" id="rememberme" class="rounded border-white/10 bg-slate-900/60 text-emerald-500 focus:ring-emerald-500/20 w-4 h-4">
-              {{ __t('login.remember') }}
-            </label>
+          <div>
+            <label for="password_confirm" class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ __t('register.password_confirm') }}</label>
+            <input 
+              type="password" 
+              name="password_confirm" 
+              id="password_confirm" 
+              required 
+              placeholder="••••••••"
+              class="w-full bg-slate-900/60 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-sm"
+            />
           </div>
 
-          <div class="pt-2">
+          <div class="pt-3">
             <x-button type="submit" class="w-full py-3">
-              {{ __t('login.submit') }}
+              {{ __t('register.submit') }}
             </x-button>
           </div>
         </form>
 
         <div class="mt-6 text-center text-xs text-slate-400 border-t border-white/5 pt-4">
-          <a href="{{ home_url('/auth/register') }}" class="hover:text-emerald-400 transition-colors font-medium">
-            {{ __t('login.no_account') }}
+          <a href="{{ home_url('/auth/login') }}" class="hover:text-emerald-400 transition-colors font-medium">
+            {{ __t('register.has_account') }}
           </a>
         </div>
       </div>

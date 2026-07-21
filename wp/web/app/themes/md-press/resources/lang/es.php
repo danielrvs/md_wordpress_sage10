@@ -7,6 +7,7 @@ return [
     'nav.pricing' => 'Planes',
     'nav.blog' => 'Blog',
     'nav.login' => 'Iniciar sesión',
+    'nav.register' => 'Registrarse',
     'nav.admin' => 'Panel Admin',
     'nav.logout' => 'Salir',
 
@@ -64,13 +65,22 @@ return [
     'doctor.availability' => 'Disponibilidad',
     'doctor.no_desc' => 'No se ha añadido descripción profesional para este médico todavía.',
 
-    // Auth / Login
+    // Auth / Login & Register
     'login.title' => 'Iniciar sesión',
     'login.username' => 'Usuario o Email',
     'login.password' => 'Contraseña',
     'login.remember' => 'Recordarme',
     'login.submit' => 'Iniciar Sesión',
-    'login.back' => 'Volver al sitio principal',
+    'login.back' => 'Volver a la web principal',
+    'login.no_account' => '¿No tienes cuenta? Regístrate gratis',
+
+    'register.title' => 'Crear Cuenta de Paciente',
+    'register.name' => 'Nombre y Apellidos',
+    'register.email' => 'Correo Electrónico',
+    'register.password' => 'Contraseña',
+    'register.password_confirm' => 'Confirmar Contraseña',
+    'register.submit' => 'Crear Cuenta',
+    'register.has_account' => '¿Ya tienes cuenta? Inicia sesión',
 
     // Extra Stats
     'stats.specialties' => 'Especialidades',
