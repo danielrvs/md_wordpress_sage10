@@ -1,4 +1,4 @@
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { Button } from './Button';
 
 interface Slot {
@@ -28,17 +28,13 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState<boolean>(false);
 
-  const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = e.target.value;
-    if (!newDate) return;
-
-    setDate(newDate);
+  const fetchSchedule = async (targetDate: string) => {
     setLoading(true);
     setSelectedSlot(null);
     setBookingSuccess(false);
 
     try {
-      const response = await fetch(`/wp-json/api/v1/doctors/${doctorId}/schedule?date=${newDate}`);
+      const response = await fetch(`/wp-json/api/v1/doctors/${doctorId}/schedule?date=${targetDate}`);
       if (response.ok) {
         const data: Schedule = await response.json();
         setSchedule(data);
@@ -50,6 +46,17 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
       setSchedule(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchedule(date);
+  }, [date]);
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    if (newDate) {
+      setDate(newDate);
     }
   };
 
