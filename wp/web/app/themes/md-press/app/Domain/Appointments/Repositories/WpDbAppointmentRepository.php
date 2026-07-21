@@ -26,7 +26,7 @@ final class WpDbAppointmentRepository implements AppointmentRepositoryInterface
 
         // TIME_FORMAT extrae únicamente el tramo HH:MM para acoplarse con tu SlotDTO
         $query = $wpdb->prepare(
-            "SELECT TIME_FORMAT(appointment_date, '%H:%i') FROM {$this->table} 
+            "SELECT TIME_FORMAT(appointment_date, '%%H:%%i') FROM {$this->table} 
              WHERE doctor_id = %d 
                AND appointment_date >= %s 
                AND appointment_date <= %s 

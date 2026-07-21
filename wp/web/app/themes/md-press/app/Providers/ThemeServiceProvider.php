@@ -43,6 +43,10 @@ class ThemeServiceProvider extends SageServiceProvider
         $this->app->bind(ScheduleRepositoryInterface::class, WpDbScheduleRepository::class);
 
         $this->app->bind(AppointmentRepositoryInterface::class, WpDbAppointmentRepository::class);
+        $this->app->bind(
+            \App\Domain\Appointments\Contracts\CreateAppointmentServiceInterface::class,
+            \App\Domain\Appointments\Services\CreateAppointmentService::class
+        );
 
         $this->app->singleton(GenerateDoctorScheduleServiceInterface::class, function ($c) {
             return new CachedGenerateDoctorScheduleService(

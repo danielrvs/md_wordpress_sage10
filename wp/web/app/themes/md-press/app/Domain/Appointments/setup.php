@@ -10,3 +10,6 @@ if (defined('WP_CLI')) {
 
 // Admin: página de gestión de citas en el menú lateral
 (new \App\Domain\Appointments\Admin\AppointmentsAdminPage())->register();
+
+// REST API Routes
+(new \App\Domain\Appointments\Http\Routes\AppointmentRoutes())->register();
