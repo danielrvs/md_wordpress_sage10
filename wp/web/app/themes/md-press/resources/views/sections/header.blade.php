@@ -38,14 +38,20 @@
 
 
       <!-- Login / User Button -->
-      <a href="{{ wp_login_url() }}"
-        class="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 hover:border-emerald-500/40 text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 active:scale-95 transition-all shadow-lg"
-        title="Iniciar Sesión">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round"
-            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      </a>
+      @if(is_user_logged_in())
+        <div class="flex items-center gap-3">
+          <x-button variant="glass" :href="admin_url()" class="py-1.5 px-3.5 text-xs">
+            Panel Admin
+          </x-button>
+          <x-button variant="secondary" :href="wp_logout_url()" class="py-1.5 px-3.5 text-xs">
+            Salir
+          </x-button>
+        </div>
+      @else
+        <x-button variant="glass" :href="wp_login_url()" class="py-1.5 px-4 text-xs">
+          Acceso Profesional
+        </x-button>
+      @endif
 
       <!-- Mobile Menu Button (Toggle/Icon for style) -->
       <button

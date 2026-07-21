@@ -62,6 +62,10 @@ class ThemeServiceProvider extends SageServiceProvider
     public function boot()
     {
         parent::boot();
+        if (file_exists($authSetup = dirname(__DIR__) . '/Domain/Auth/setup.php')) {
+            require_once $authSetup;
+        }
+
         if (file_exists($appointmentSetup = dirname(__DIR__) . '/Domain/Appointments/setup.php')) {
             require_once $appointmentSetup;
         }
@@ -73,7 +77,5 @@ class ThemeServiceProvider extends SageServiceProvider
         if (file_exists($scheduleSetup = dirname(__DIR__) . '/Domain/Schedules/setup.php')) {
             require_once $scheduleSetup;
         }
-
-
     }
 }
