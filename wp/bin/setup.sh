@@ -95,6 +95,10 @@ else
     log_success "✅ WordPress ya se encuentra instalado en la base de datos."
 fi
 
+log_info "🔗 Configurando la estructura de enlaces permanentes (/%postname%/)..."
+wp rewrite structure '/%postname%/' --hard --allow-root
+wp rewrite flush --hard --allow-root
+
 
 if [ -d "${THEME_DIR}" ]; then
     log_info "🎨 Activando el tema Sage: ${THEME_NAME}..."
