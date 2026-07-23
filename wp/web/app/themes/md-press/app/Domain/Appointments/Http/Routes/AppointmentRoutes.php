@@ -59,5 +59,29 @@ class AppointmentRoutes
             'callback' => [$controller, 'getDoctorAppointments'],
             'permission_callback' => '__return_true',
         ]);
+
+        // Obtener citas del paciente autenticado
+        register_rest_route('api/v1', '/patient/appointments', [
+            'methods' => 'GET',
+            'callback' => [$controller, 'getPatientAppointments'],
+            'permission_callback' => function (): bool|\WP_Error {
+                if (!is_user_logged_in()) {
+                    return new \WP_Error('rest_forbidden', 'Debes iniciar sesión para consultar tus citas.', ['status' => 401]);
+                }
+                return true;
+            },
+        ]);
+
+        // Cancelar cita del paciente autenticado
+        register_rest_route('api/v1', '/patient/appointments/(?P<id>\d+)/cancel', [
+            'methods' => 'POST',
+            'callback' => [$controller, 'cancelPatientAppointment'],
+            'permission_callback' => function (): bool|\WP_Error {
+                if (!is_user_logged_in()) {
+                    return new \WP_Error('rest_forbidden', 'Debes iniciar sesión para cancelar una cita.', ['status' => 401]);
+                }
+                return true;
+            },
+        ]);
     }
 }

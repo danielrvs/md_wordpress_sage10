@@ -37,13 +37,22 @@
       <!-- Auth Controls (Login / Register / Admin / Logout) -->
       @if(is_user_logged_in())
         <div class="hidden md:flex items-center gap-2">
-          <a href="{{ admin_url() }}"
-            class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-semibold active:scale-95 transition-all shadow-md shrink-0 whitespace-nowrap">
+          <a href="{{ home_url('/patient-dashboard') }}"
+            class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-xs font-bold transition-all shadow-md shadow-emerald-500/20 active:scale-95 shrink-0 whitespace-nowrap">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
             </svg>
-            <span>{{ __t('nav.admin') }}</span>
+            <span>{{ __t('nav.portal', 'Mi Portal') }}</span>
           </a>
+          @if(current_user_can('manage_options') || current_user_can('edit_posts'))
+            <a href="{{ admin_url() }}"
+              class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-semibold active:scale-95 transition-all shadow-md shrink-0 whitespace-nowrap">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>{{ __t('nav.admin') }}</span>
+            </a>
+          @endif
           <a href="{{ wp_logout_url() }}"
             class="flex items-center justify-center w-9 h-9 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 active:scale-95 transition-all shadow-md shrink-0"
             title="{{ __t('nav.logout') }}">
@@ -119,10 +128,16 @@
 
     <div class="border-t border-white/10 pt-3 mt-2 flex flex-col gap-2">
       @if(is_user_logged_in())
-        <a href="{{ admin_url() }}"
-          class="block text-center text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 py-2 rounded-xl">
-          {{ __t('nav.admin') }}
+        <a href="{{ home_url('/patient-dashboard') }}"
+          class="block text-center text-xs font-bold text-slate-950 bg-emerald-400 py-2 rounded-xl">
+          {{ __t('nav.portal', 'Mi Portal') }}
         </a>
+        @if(current_user_can('manage_options') || current_user_can('edit_posts'))
+          <a href="{{ admin_url() }}"
+            class="block text-center text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 py-2 rounded-xl">
+            {{ __t('nav.admin') }}
+          </a>
+        @endif
         <a href="{{ wp_logout_url() }}"
           class="block text-center text-xs font-semibold text-red-400 bg-red-500/10 border border-red-500/20 py-2 rounded-xl">
           {{ __t('nav.logout') }}

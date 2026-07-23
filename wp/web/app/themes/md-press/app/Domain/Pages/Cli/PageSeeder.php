@@ -40,6 +40,11 @@ class PageSeeder
                 'slug'    => 'blog',
                 'content' => '',
             ],
+            [
+                'title'   => 'Mi Portal',
+                'slug'    => 'patient-dashboard',
+                'content' => '',
+            ],
         ];
 
         $created = 0;

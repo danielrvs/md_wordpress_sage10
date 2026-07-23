@@ -90,4 +90,61 @@ class AppointmentController
             return new WP_Error('server_error', 'Error al obtener las citas del médico.', ['status' => 500]);
         }
     }
+
+    /**
+     * Obtener las citas del paciente autenticado.
+     * GET /wp-json/api/v1/patient/appointments
+     */
+    public function getPatientAppointments(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $patientId = get_current_user_id();
+
+        if ($patientId <= 0) {
+            return new WP_Error('rest_unauthorized', 'Debes estar autenticado para ver tus citas.', ['status' => 401]);
+        }
+
+        try {
+            $appointments = $this->appointmentRepository->getAppointmentsByPatient($patientId);
+
+            return new WP_REST_Response([
+                'success' => true,
+                'appointments' => $appointments,
+            ], 200);
+        } catch (\Throwable $e) {
+            return new WP_Error('server_error', 'Error al consultar tus citas médicas: ' . $e->getMessage(), ['status' => 500]);
+        }
+    }
+
+    /**
+     * Cancelar una cita médica del paciente autenticado.
+     * POST /wp-json/api/v1/patient/appointments/{id}/cancel
+     */
+    public function cancelPatientAppointment(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $patientId = get_current_user_id();
+        $appointmentId = (int) $request->get_param('id');
+
+        if ($patientId <= 0) {
+            return new WP_Error('rest_unauthorized', 'Debes estar autenticado para cancelar tus citas.', ['status' => 401]);
+        }
+
+        if ($appointmentId <= 0) {
+            return new WP_Error('invalid_appointment_id', 'ID de cita no válido.', ['status' => 400]);
+        }
+
+        try {
+            $success = $this->appointmentRepository->cancelAppointment($appointmentId, $patientId);
+
+            if (!$success) {
+                return new WP_Error('appointment_not_found', 'No se encontró la cita especificada o no perteneces a ella.', ['status' => 404]);
+            }
+
+            return new WP_REST_Response([
+                'success' => true,
+                'message' => 'Cita cancelada correctamente.',
+            ], 200);
+        } catch (\Throwable $e) {
+            return new WP_Error('server_error', 'Error al cancelar la cita médica: ' . $e->getMessage(), ['status' => 500]);
+        }
+    }
 }

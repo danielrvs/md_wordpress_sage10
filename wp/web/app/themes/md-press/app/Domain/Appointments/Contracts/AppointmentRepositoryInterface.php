@@ -14,4 +14,6 @@ interface AppointmentRepositoryInterface
 
     public function create(array $data): int;
     public function getAppointmentsByDoctor(int $doctorId, ?string $date = null, string $order = 'ASC'): array;
+    public function getAppointmentsByPatient(int $patientId): array;
+    public function cancelAppointment(int $appointmentId, int $patientId): bool;
 }
