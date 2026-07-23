@@ -1,0 +1,40 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    name: Run Setup & Pest Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup environment files
+        run: |
+          echo "ENVIROMENT=dev" > .env
+          if [ -f "wp/.env.example" ]; then
+            cp wp/.env.example wp/.env
+          fi
+
+      - name: Build and start Docker containers
+        run: |
+          docker-compose -f infrastructure/docker-compose.dev.yml up --build -d
+
+      - name: Run WP provision & setup script
+        run: |
+          docker-compose -f infrastructure/docker-compose.dev.yml exec -T app /app/wp/bin/setup.sh
+
+      - name: Run Pest test suite
+        run: |
+          docker-compose -f infrastructure/docker-compose.dev.yml exec -T app composer --working-dir=/app/wp test
+
+      - name: Stop Docker containers
+        if: always()
+        run: |
+          docker-compose -f infrastructure/docker-compose.dev.yml down -v
