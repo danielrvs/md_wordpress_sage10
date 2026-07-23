@@ -24,17 +24,17 @@ jobs:
 
       - name: Build and start Docker containers
         run: |
-          docker-compose -f infrastructure/docker-compose.dev.yml up --build -d
+          docker compose -f infrastructure/docker-compose.dev.yml up --build -d
 
       - name: Run WP provision & setup script
         run: |
-          docker-compose -f infrastructure/docker-compose.dev.yml exec -T app /app/wp/bin/setup.sh
+          docker compose -f infrastructure/docker-compose.dev.yml exec -T app /app/wp/bin/setup.sh
 
       - name: Run Pest test suite
         run: |
-          docker-compose -f infrastructure/docker-compose.dev.yml exec -T app composer --working-dir=/app/wp test
+          docker compose -f infrastructure/docker-compose.dev.yml exec -T app composer --working-dir=/app/wp test
 
       - name: Stop Docker containers
         if: always()
         run: |
-          docker-compose -f infrastructure/docker-compose.dev.yml down -v
+          docker compose -f infrastructure/docker-compose.dev.yml down -v
