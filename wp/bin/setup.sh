@@ -65,8 +65,18 @@ if [ ! -f "/app/wp/.env" ]; then
     log_warning "⚠️  ¡ATENCIÓN!: Revisa tu archivo .env y asegúrate de que las credenciales de la BD coincidan con tu docker-compose.yml."
 fi
 
-log_info "⏳ Verificando que la base de datos MySQL esté disponible"
+log_info "⏳ Verificando que la base de datos MySQL esté disponible..."
+MAX_RETRIES=20
+RETRY_COUNT=0
+
 until wp db check --allow-root > /dev/null 2>&1; do
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+        log_error "❌ Error: La base de datos MySQL no respondió tras ${MAX_RETRIES} intentos."
+        log_info "Detalle de error devuelto por WP-CLI:"
+        wp db check --allow-root || true
+        exit 1
+    fi
     sleep 2
 done
 log_success "✅ Base de datos MySQL disponible"
