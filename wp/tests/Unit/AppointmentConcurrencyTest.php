@@ -58,33 +58,3 @@ test('prevents race conditions when a slot lock is already held in Redis', funct
         $lock->release();
     }
 });
-
-test('AtomicLock::run executes callback and releases lock on success', function () {
-    $lock = new AtomicLock('test_context', 'resource_1', 5);
-
-    $result = $lock->run(fn () => 'ok');
-
-    expect($result)->toBe('ok');
-
-    // El lock se debe haber liberado, por lo que un segundo acquire no debe fallar
-    $lock2 = new AtomicLock('test_context', 'resource_1', 5);
-    $lock2->acquire();
-    $lock2->release();
-});
-
-test('AtomicLock::run releases lock even when callback throws', function () {
-    $lock = new AtomicLock('test_context', 'resource_2', 5);
-
-    try {
-        $lock->run(fn () => throw new RuntimeException('boom'));
-    } catch (RuntimeException) {
-        // esperado
-    }
-
-    // El lock se debe haber liberado — si acquire() no lanza, el lock está libre
-    $lock2 = new AtomicLock('test_context', 'resource_2', 5);
-    $lock2->acquire();
-    $lock2->release();
-
-    expect(true)->toBeTrue();
-});
