@@ -95,8 +95,8 @@ else
     log_success "✅ WordPress ya se encuentra instalado en la base de datos."
 fi
 
-log_info "🔗 Configurando la estructura de enlaces permanentes (/%postname%/)..."
-wp rewrite structure '/%postname%/' --hard --allow-root
+log_info "🔗 Configurando la estructura de enlaces permanentes (/blog/%postname%/)..."
+wp rewrite structure '/blog/%postname%/' --hard --allow-root
 wp rewrite flush --hard --allow-root
 
 

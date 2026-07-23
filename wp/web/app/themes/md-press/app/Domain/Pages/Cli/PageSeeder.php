@@ -30,6 +30,16 @@ class PageSeeder
                 'slug'    => 'doctors',
                 'content' => '',
             ],
+            [
+                'title'   => 'Inicio',
+                'slug'    => 'home',
+                'content' => '',
+            ],
+            [
+                'title'   => 'Blog',
+                'slug'    => 'blog',
+                'content' => '',
+            ],
         ];
 
         $created = 0;
@@ -55,6 +65,16 @@ class PageSeeder
                 WP_CLI::success(sprintf('Página "%s" creada correctamente (ID: %d, /%s).', $page['title'], $pageId, $page['slug']));
                 $created++;
             }
+        }
+
+        $homePage = get_page_by_path('home');
+        $blogPage = get_page_by_path('blog');
+
+        if ($homePage instanceof \WP_Post && $blogPage instanceof \WP_Post) {
+            update_option('show_on_front', 'page');
+            update_option('page_on_front', $homePage->ID);
+            update_option('page_for_posts', $blogPage->ID);
+            WP_CLI::log(sprintf('Páginas de Lectura de WordPress configuradas: Inicio (page_on_front = %d), Blog (page_for_posts = %d).', $homePage->ID, $blogPage->ID));
         }
 
         WP_CLI::success(sprintf('Sembrado de páginas completado. %d páginas creadas.', $created));
