@@ -9,6 +9,7 @@ use App\Domain\Appointments\Contracts\CreateAppointmentServiceInterface;
 use App\Domain\Appointments\DTOs\AppointmentDTO;
 use App\Domain\Appointments\DTOs\CreateAppointmentDTO;
 use App\Domain\Schedules\Contracts\ScheduleRepositoryInterface;
+use App\Infrastructure\Cache\AtomicLock;
 use App\Infrastructure\Cache\VersionedCache;
 use DateTime;
 use DomainException;
@@ -26,21 +27,33 @@ class CreateAppointmentService implements CreateAppointmentServiceInterface
 
     public function execute(CreateAppointmentDTO $dto): AppointmentDTO
     {
-        $this->assertDoctorExists($dto->doctorId);
-
         $formattedDate = $this->parseDate($dto->appointmentDate);
         $formattedTime = $this->parseTime($dto->startTime);
 
-        $this->assertNotInPastOrTooSoon($formattedDate, $formattedTime);
-        $this->assertDoctorAvailable($dto->doctorId, $formattedDate);
-        $this->assertSlotFree($dto->doctorId, $formattedDate, $formattedTime);
+        $lock = new AtomicLock(
+            context: 'appointment_slot',
+            resource: sprintf('%d_%s_%s', $dto->doctorId, $formattedDate, $formattedTime),
+        );
+
+        return $lock->run(
+            callback: fn () => $this->processBooking($dto, $formattedDate, $formattedTime),
+            failMessage: 'El tramo horario seleccionado está siendo procesado por otra reserva. Por favor, reintenta en unos segundos.',
+        );
+    }
+
+    private function processBooking(CreateAppointmentDTO $dto, string $date, string $time): AppointmentDTO
+    {
+        $this->assertDoctorExists($dto->doctorId);
+        $this->assertNotInPastOrTooSoon($date, $time);
+        $this->assertDoctorAvailable($dto->doctorId, $date);
+        $this->assertSlotFree($dto->doctorId, $date, $time);
 
         $appointmentId = $this->appointmentRepository->create([
             'doctor_id'        => $dto->doctorId,
             'patient_id'       => $dto->patientId,
             'clinic_id'        => $dto->clinicId,
-            'appointment_date' => $formattedDate,
-            'start_time'       => $formattedTime,
+            'appointment_date' => $date,
+            'start_time'       => $time,
             'status'           => $dto->status,
             'notes'            => $dto->notes,
         ]);
@@ -52,7 +65,7 @@ class CreateAppointmentService implements CreateAppointmentServiceInterface
             doctorId: $dto->doctorId,
             patientId: $dto->patientId,
             clinicId: $dto->clinicId,
-            dateTime: sprintf('%s %s:00', $formattedDate, $formattedTime),
+            dateTime: sprintf('%s %s:00', $date, $time),
             status: $dto->status,
             notes: $dto->notes
         );
