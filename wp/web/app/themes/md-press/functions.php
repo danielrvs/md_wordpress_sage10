@@ -15,6 +15,10 @@ use Roots\Acorn\Application;
 */
 
 if (! file_exists($composer = __DIR__.'/vendor/autoload.php')) {
+    $composer = dirname(__DIR__, 3) . '/vendor/autoload.php';
+}
+
+if (! file_exists($composer)) {
     wp_die(__('Error locating autoloader. Please run <code>composer install</code>.', 'sage'));
 }
 

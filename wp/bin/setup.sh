@@ -111,6 +111,11 @@ wp rewrite flush --hard --allow-root
 
 
 if [ -d "${THEME_DIR}" ]; then
+    if [ -f "${THEME_DIR}/composer.json" ] && [ ! -d "${THEME_DIR}/vendor" ]; then
+        log_info "📦 Instalando dependencias PHP (Composer) del tema Sage..."
+        composer install --working-dir="${THEME_DIR}" --no-interaction --prefer-dist --optimize-autoloader
+    fi
+
     log_info "🎨 Activando el tema Sage: ${THEME_NAME}..."
     wp theme activate "${THEME_NAME}" --allow-root
     log_success "✅ Tema Sage activado correctamente"
