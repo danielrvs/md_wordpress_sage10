@@ -132,3 +132,19 @@ Si realizas modificaciones en las vistas Blade y el compilador no refleja los ca
 ```bash
 docker-compose -f infrastructure/docker-compose.dev.yml exec app wp acorn view:clear --allow-root
 ```
+
+---
+
+## 🔮 Próximos Pasos y Mejoras Futuras
+
+### 1. Procesamiento Asíncrono de Eventos y Colas (Queues)
+* **El problema**: La reserva de cita debería disparar notificaciones (emails, SMS, integración con Google Calendar del médico). Hacer esto de forma síncrona en la petición HTTP ralentizaría la respuesta.
+* **La solución**: Despachar un evento de dominio (`CitaReservada`) y procesarlo en segundo plano usando Laravel Queues / Redis dentro de Acorn.
+
+### 2. Cobertura de Tests de Reglas de Negocio
+* **Lo que hay**: Tests de integración de rutas para comprobar respuestas HTTP y estados.
+* **Lo que faltaría**: Tests unitarios/feature centrados exclusivamente en los casos esquina del negocio (ej: intentar reservar una cita en el pasado, intentar reservar en el horario de descanso del médico, cancelar una cita con menos de 24h de antelación).
+
+### 3. Capa de Dominio Pura (Mappers y Entidades)
+* **El detalle**: Aplicación de Clean Architecture en carpetas y controladores. En un sistema ultra-crítico, aislar las entidades en POPOs de PHP con sus mappers desacoplando completamente los modelos/ACF de WordPress.
+
