@@ -73,11 +73,17 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
     setErrorMessage(null);
 
     try {
+      const appSettings = (window as any).AppTranslations;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (appSettings?.nonce) {
+        headers['X-WP-Nonce'] = appSettings.nonce;
+      }
+
       const response = await fetch('/wp-json/api/v1/appointments', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
           doctor_id: doctorId,
           patient_id: 1,
@@ -248,7 +254,7 @@ export function DoctorBooking({ doctorId, initialDate, initialSchedule }: Doctor
                         </div>
                         {isUnauthorized && (
                           <a
-                            href="/auth/login"
+                            href={(window as any).AppTranslations?.loginUrl || '/wp/wp-login.php'}
                             className="inline-flex items-center justify-center w-full py-2 px-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-colors shadow-md"
                           >
                             {__('nav.login', 'Iniciar Sesión')}

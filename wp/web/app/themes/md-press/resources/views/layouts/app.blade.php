@@ -18,7 +18,10 @@
     <script>
       window.AppTranslations = {
         locale: @json(__locale()),
-        strings: @json(\App\Services\LanguageManager::getTranslations())
+        strings: @json(\App\Services\LanguageManager::getTranslations()),
+        nonce: @json(wp_create_nonce('wp_rest')),
+        isLoggedIn: @json(is_user_logged_in()),
+        loginUrl: @json(wp_login_url())
       };
     </script>
 
