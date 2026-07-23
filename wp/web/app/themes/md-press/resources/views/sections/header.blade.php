@@ -36,7 +36,7 @@
     <div class="flex items-center gap-3">
       <!-- Auth Controls (Login / Register / Admin / Logout) -->
       @if(is_user_logged_in())
-        <div class="flex items-center gap-2">
+        <div class="hidden md:flex items-center gap-2">
           <a href="{{ admin_url() }}"
             class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 text-xs font-semibold active:scale-95 transition-all shadow-md shrink-0 whitespace-nowrap">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@
           </a>
         </div>
       @else
-        <div class="flex items-center gap-2.5">
+        <div class="hidden md:flex items-center gap-2.5">
           <!-- Iniciar Sesión -->
           <a href="{{ wp_login_url() }}"
             class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/40 text-slate-200 hover:text-white hover:bg-white/10 text-xs font-semibold transition-all shadow-sm shrink-0 whitespace-nowrap">
