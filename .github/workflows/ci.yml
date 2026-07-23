@@ -22,6 +22,9 @@ jobs:
   unit-tests:
     name: Unit Tests (Ultra Fast)
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wp
     steps:
       - uses: actions/checkout@v4
 
@@ -31,7 +34,9 @@ jobs:
           php-version: '8.4'
           tools: composer
           coverage: none
-          cache: composer
+
+      - name: Validate composer.json
+        run: composer validate --strict
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
