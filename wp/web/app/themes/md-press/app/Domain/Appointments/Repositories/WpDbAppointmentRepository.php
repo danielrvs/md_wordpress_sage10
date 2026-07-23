@@ -82,4 +82,73 @@ final class WpDbAppointmentRepository implements AppointmentRepositoryInterface
 
         return $wpdb->get_results($query, OBJECT) ?: [];
     }
+
+    public function getAppointmentsByPatient(int $patientId): array
+    {
+        global $wpdb;
+
+        $postsTable = $wpdb->posts;
+        $postmetaTable = $wpdb->postmeta;
+
+        $query = $wpdb->prepare(
+            "SELECT 
+                a.id,
+                a.doctor_id,
+                a.patient_id,
+                a.clinic_id,
+                a.appointment_date,
+                a.status,
+                a.notes,
+                a.created_at,
+                p.post_title as doctor_name,
+                pm_spec.meta_value as doctor_specialty,
+                pm_location.meta_value as doctor_location
+             FROM {$this->table} a
+             LEFT JOIN {$postsTable} p ON p.ID = a.doctor_id
+             LEFT JOIN {$postmetaTable} pm_spec ON (pm_spec.post_id = a.doctor_id AND pm_spec.meta_key = 'specialty')
+             LEFT JOIN {$postmetaTable} pm_location ON (pm_location.post_id = a.doctor_id AND pm_location.meta_key = 'consultory_address')
+             WHERE a.patient_id = %d
+             ORDER BY a.appointment_date DESC",
+            $patientId
+        );
+
+        $results = $wpdb->get_results($query, ARRAY_A) ?: [];
+
+        return array_map(function ($row) {
+            $doctorId = (int) $row['doctor_id'];
+            $thumbnailId = get_post_thumbnail_id($doctorId);
+            $thumbnailUrl = $thumbnailId ? wp_get_attachment_image_url($thumbnailId, 'thumbnail') : null;
+
+            return [
+                'id' => (int) $row['id'],
+                'doctor_id' => $doctorId,
+                'doctor_name' => $row['doctor_name'] ?? ('Médico #' . $doctorId),
+                'doctor_specialty' => $row['doctor_specialty'] ?? 'Medicina General',
+                'doctor_location' => $row['doctor_location'] ?? 'Consultorio Principal',
+                'doctor_avatar' => $thumbnailUrl ?: null,
+                'appointment_date' => $row['appointment_date'],
+                'status' => $row['status'],
+                'notes' => $row['notes'],
+                'created_at' => $row['created_at'],
+            ];
+        }, $results);
+    }
+
+    public function cancelAppointment(int $appointmentId, int $patientId): bool
+    {
+        global $wpdb;
+
+        $updated = $wpdb->update(
+            $this->table,
+            ['status' => 'cancelled'],
+            [
+                'id' => $appointmentId,
+                'patient_id' => $patientId,
+            ],
+            ['%s'],
+            ['%d', '%d']
+        );
+
+        return $updated !== false && $updated > 0;
+    }
 }

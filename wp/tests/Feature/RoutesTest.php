@@ -33,6 +33,7 @@ dataset('configured_routes', [
     'single blog post (/blog/*)'   => ['/blog/hello-world/'],
     'doctors directory (/doctors/)' => ['/doctors/'],
     'pricing page (/pricing/)'      => ['/pricing/'],
+    'patient dashboard'             => ['/patient-dashboard/'],
 ]);
 
 test('configured routes return HTTP 200 OK', function (string $route) {

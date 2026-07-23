@@ -55,13 +55,16 @@ class LanguageManager
         return self::$translations;
     }
 
-    public static function translate(string $key, array $replace = []): string
+    public static function translate(string $key, array|string $replace = []): string
     {
         self::boot();
 
-        $text = self::$translations[$key] ?? $key;
+        $default = is_string($replace) ? $replace : null;
+        $replacements = is_array($replace) ? $replace : [];
 
-        foreach ($replace as $placeholder => $value) {
+        $text = self::$translations[$key] ?? ($default ?? $key);
+
+        foreach ($replacements as $placeholder => $value) {
             $text = str_replace(':' . $placeholder, (string) $value, $text);
         }
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Vite;
 \App\Services\LanguageManager::boot();
 
 if (!function_exists('__t')) {
-    function __t(string $key, array $replace = []): string {
+    function __t(string $key, array|string $replace = []): string {
         return \App\Services\LanguageManager::translate($key, $replace);
     }
 }
@@ -20,6 +20,15 @@ if (!function_exists('__locale')) {
         return \App\Services\LanguageManager::getLocale();
     }
 }
+
+/**
+ * Desactivar la barra superior de WordPress en el frontend para pacientes / no administradores.
+ */
+add_action('after_setup_theme', function () {
+    if (!current_user_can('manage_options') && !current_user_can('edit_posts')) {
+        show_admin_bar(false);
+    }
+});
 
 /**
  * Inject styles into the block editor.

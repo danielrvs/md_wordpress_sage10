@@ -1,6 +1,7 @@
 import { createElement, createRoot } from '@wordpress/element';
 import { MedicalSearchDirectory } from './components/MedicalSearchDirectory';
 import { DoctorBooking } from './components/DoctorBooking';
+import { PatientDashboard } from './components/patient/PatientDashboard';
 
 document.addEventListener('DOMContentLoaded', () => {
     const rootElement = document.getElementById('medical-search-root');
@@ -24,5 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const root = createRoot(bookingElement);
         root.render(createElement(DoctorBooking, { doctorId, initialDate, initialSchedule }));
+    }
+
+    const patientDashboardElement = document.getElementById('patient-dashboard-root');
+    if (patientDashboardElement) {
+        const root = createRoot(patientDashboardElement);
+        root.render(createElement(PatientDashboard));
     }
 });
