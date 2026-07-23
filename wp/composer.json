@@ -35,8 +35,7 @@
       "type": "composer",
       "url": "https://wpackagist.org"
     },
-    "0": {
-      "name": "wp-packages",
+    "wp-packages": {
       "type": "composer",
       "url": "https://repo.wp-packages.org"
     }
