@@ -42,7 +42,7 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Run Unit Tests
-        run: vendor/bin/phpunit --testsuite=Unit
+        run: vendor/bin/pest --testsuite=Unit
 
   integration-tests:
     name: Integration & Pest Tests (Docker)
